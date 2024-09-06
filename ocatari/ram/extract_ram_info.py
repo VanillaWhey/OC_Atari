@@ -7,7 +7,15 @@ def get_max_objects(game_name, hud):
     game_module = '.'.join(p_module)
     try:
         mod = sys.modules[game_module]
-        return mod._get_max_objects(hud)
+        objects = []
+        if hud:
+            max_obj_dict = mod.MAX_NB_OBJECTS_HUD
+        else:
+            max_obj_dict = mod.MAX_NB_OBJECTS
+        for k, v in max_obj_dict.items():
+            for _ in range(0, v):
+                objects.append(getattr(mod, k)())
+        return objects
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
@@ -65,15 +73,12 @@ def get_object_state_size(game_name, hud):
     game_module = '.'.join(p_module)
     try:
         mod = sys.modules[game_module]
-        return mod._get_object_state_size(hud)
+        if hud:
+            return len(mod.MAX_NB_OBJECTS_HUD)
+        return len(mod.MAX_NB_OBJECTS)
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
-    except AttributeError as err:
-        try:
-            return len(mod._get_max_objects(hud))
-        except AssertionError as err:
-            raise err
     
 
 def get_object_state(reference_list, objects, game_name):
