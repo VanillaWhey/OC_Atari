@@ -8,10 +8,22 @@ from .game_objects import GameObject
 RAM extraction for the game H.E.R.O.
 """
 
-MAX_NB_OBJECTS = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
-                  "Lamp": 1, "Snake": 5, }
-MAX_NB_OBJECTS_HUD = {"Wall": 15, "LavaWall": 15, "Enemy": 10, "Player": 1, "LaserBeam": 3, "Bomb": 5, "EndNPC": 1,
-                      "Lamp": 1, "Snake": 5, "PowerBar": 1, "BombStock": 1, "Life": 1, "Score": 1}
+MAX_NB_OBJECTS = {
+    'Wall': 15,
+    'LavaWall': 15,
+    'Enemy': 10,
+    'Player': 1,
+    'LaserBeam': 3,
+    'Bomb': 5,
+    'EndNPC': 1,
+    'Lamp': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'PowerBar': 1,
+    'BombStock': 1,
+    'Life': 1,
+    'Score': 1
+}
 
 
 # changing ram 54 activate some kind of bot that plays alone
@@ -21,7 +33,7 @@ class Wall(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 8, 10
         self.destructible: bool = False
@@ -33,14 +45,14 @@ class LavaWall(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 8, 10
 
 
 class Platform(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 136
         self.wh = 9, 3
 
@@ -59,7 +71,7 @@ class Enemy(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 7, 10
         self.type: EnemyType
@@ -71,7 +83,7 @@ class Player(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 6, 25
         self.rgb = [84, 138, 210]
@@ -83,7 +95,7 @@ class LaserBeam(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 7, 2
         self.rgb = [200, 72, 72]
@@ -95,7 +107,7 @@ class Bomb(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 0
         self.wh = 3, 11
         self.rgb = [184, 50, 50]
@@ -107,7 +119,7 @@ class EndNPC(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 85
         self.wh = 8, 13
 
@@ -118,7 +130,7 @@ class Lamp(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 0, 35
         self.wh = 7, 8
 
@@ -129,7 +141,7 @@ class PowerBar(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 49, 145
         self.wh = 79, 5
         self.value = 1
@@ -141,7 +153,7 @@ class BombStock(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 58, 165
         self.wh = 43, 12
         self.value = 5
@@ -153,7 +165,7 @@ class Life(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 58, 152
         self.wh = 43, 13
         self.value = 4
@@ -165,7 +177,7 @@ class Score(GameObject):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.xy = 58, 178
         self.wh = 43, 8
         self.value = 0

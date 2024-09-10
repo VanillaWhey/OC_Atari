@@ -8,8 +8,17 @@ RAM extraction for the game BERZERK. Supported modes: ram.
 Attention: EvilOtto enemy not implemented due to not getting it spawned during development.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Enemy': 8, 'PlayerMissile': 1, 'EnemyMissile': 1, 'PlayerScore': 1, 'Logo': 2, 'RoomCleared': 1}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'Enemy': 8,
+    'PlayerMissile': 1,
+    'EnemyMissile': 1
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'PlayerScore': 1,
+    'Logo': 2,
+    'RoomCleared': 1
+}
 
 class Player(GameObject):
     """
@@ -104,20 +113,6 @@ class RoomCleared(GameObject):
         self.wh = 14, 7
         self.hud = True
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=False):
     """

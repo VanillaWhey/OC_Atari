@@ -1,9 +1,20 @@
 from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Fire_Hole': 1,
+    'Player_Shot': 1,
+    'Helicopter': 1,
+    'Hornet': 1,
+    'Enemy_Shot': 1,
+    'Ice': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Life': 3
+}
 
 class Player(GameObject):
     def __init__(self):
@@ -96,20 +107,6 @@ class Life(GameObject):
         self.hud = False
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

@@ -14,67 +14,67 @@ cubes_colors = [[45, 87, 176], [210, 210, 64], [192, 192, 192], [111, 111, 111]]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 181, 83, 40
 
 
 class Cube(GameObject):
     def __init__(self, color, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = color
 
 
 class Disk(GameObject):
     def __init__(self, color, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = color
 
 
 class PurpleBall(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 146, 70, 192
 
 
 class RedBall(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 
 class GreenBall(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 50, 132, 50
 
 
 class Coily(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 146, 70, 192
 
 
 class Sam(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 50, 132, 50
 
 
 class FlyingDiscs(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 210, 64
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 210, 64
 
 

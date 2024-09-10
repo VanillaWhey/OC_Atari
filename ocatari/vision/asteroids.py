@@ -12,31 +12,31 @@ player_missile_colors = {"blue": [117, 181, 239], "red": [240, 128, 128]}
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240, 128, 128
 
 
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50
 
 
 class Asteroid(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 180, 122, 48
 
 
 class PlayerMissile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 117, 181, 239
 
 

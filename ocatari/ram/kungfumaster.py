@@ -2,8 +2,28 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Knife_Throwers": 1, "Henchmen": 3, "Snake": 1, "Dragon": 1, "Dragon_Smoke": 1, "Dragon_Balls": 1, "Red_Ball": 1, "Airball": 1, "Small_Enemy": 1, "Enemy_Final_Fighter": 1, "Projectile": 1, "Dragon_Fire": 1, "Score": 1, "Time": 1, "Lives": 1, "Player_Health_Bar": 1, "Enemy_Health_Bar": 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Knife_Throwers': 1,
+    'Henchmen': 3,
+    'Snake': 1,
+    'Dragon': 1,
+    'Dragon_Smoke': 1,
+    'Dragon_Balls': 1,
+    'Red_Ball': 1,
+    'Airball': 1,
+    'Small_Enemy': 1,
+    'Enemy_Final_Fighter': 1,
+    'Projectile': 1,
+    'Dragon_Fire': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Time': 1,
+    'Lives': 1,
+    'Player_Health_Bar': 1,
+    'Enemy_Health_Bar': 1
+}
 
 class Player(GameObject):
     """
@@ -137,7 +157,12 @@ class Enemy_Final_Fighter(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
-class Knifes(GameObject):
+class Projectile(GameObject):
+    @property
+    def category(self):
+        return "Projectile"
+
+class Knifes(Projectile):
     """
     Knifes throw by Knife_Throwers or Final_Fighters
     """
@@ -148,7 +173,7 @@ class Knifes(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
-class Dragon_Fire(GameObject):
+class Dragon_Fire(Projectile):
     """
     Fire spit by the dragon
     """
@@ -194,7 +219,7 @@ class Lives(GameObject):
         self.wh = (6, 7)
         self.rgb = 214, 214, 214
         self.hud = True
-        self.value
+        self.value = 0
 
 class Player_Health_Bar(GameObject):
     """
@@ -217,22 +242,6 @@ class Enemy_Health_Bar(GameObject):
         self.wh = (38, 5)
         self.rgb = 184, 50, 50
         self.hud = True
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

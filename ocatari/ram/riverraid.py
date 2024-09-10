@@ -10,10 +10,19 @@ Furthermore there was no y-Position for the Objects found in the RAM. It could b
 the players y-Position not stored in the RAM.
 """
 
-# MAX_NB_OBJECTS = {"Player": 1, "PlayerMissile": 1, "Bridge": 1, "Tanker": 6, "FuelDepot": 6,
-#                   "Helicopter": 6, "Jet": 6}
-MAX_NB_OBJECTS = {'PlayerScore': 6, 'Lives': 1}
-MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'PlayerMissile': 1,
+    'Bridge': 1,
+    'Tanker': 6,
+    'FuelDepot': 6,
+    'Helicopter': 6,
+    'Jet': 6
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'PlayerScore': 6,
+    'Lives': 1
+}
 
 
 def twos_comp(val):
@@ -30,7 +39,7 @@ class _DescendingObject(GameObject):
     
     _offset = None
     
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__()
         self._xy = 15 * xfr - x_off, -5 -self.wh[1]
     
@@ -71,7 +80,7 @@ class Helicopter(_DescendingObject):
     
     _offset = 16
     fh = 10  # final height
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
         self.wh = 8, 10
         self.rgb = 0, 64, 48
@@ -91,7 +100,7 @@ class Tanker(_DescendingObject):
     
     _offset = 13
     fh = 8
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
         self.wh = 16, 8
         self.rgb = 84, 160, 197
@@ -102,10 +111,10 @@ class Jet(_DescendingObject):
     """
     The enemy jets.
     """
-    
+
     _offset = 15
     fh = 6
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
         self.wh = 8, 6
         self.rgb = 117, 181, 239
@@ -116,10 +125,10 @@ class Bridge(_DescendingObject):
     """
     The bridge targets.
     """
-    
+
     _offset = 17
     fh = 18
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
         self.wh = 32, 18
         self.rgb = 134, 134, 29
@@ -130,10 +139,10 @@ class FuelDepot(_DescendingObject):
     """
     Fuel depots targets.
     """
-    
+
     _offset = 23
     fh = 24
-    def __init__(self, xfr, x_off):
+    def __init__(self, xfr=0, x_off=0):
         super().__init__(xfr, x_off)
         self.wh = 7, 24
         self.rgb = 210, 91, 94
@@ -172,22 +181,6 @@ class Lives(GameObject):
 
 _ram_to_class = [None, None, None, None, Jet, Helicopter, Helicopter, Tanker, Bridge, None, FuelDepot] # 9th would be houseandtree
 global cntr, prev11, prev70, enemies
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

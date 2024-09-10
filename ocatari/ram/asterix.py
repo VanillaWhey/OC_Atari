@@ -1,11 +1,19 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import math
 import sys
 
 
-MAX_NB_OBJECTS = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8}
-MAX_NB_OBJECTS_HUD = {"Player" :  1, "Enemy": 8, "Reward" : 8, "Consumable" : 8, "Score" : 1}
+MAX_NB_OBJECTS = {
+    'Player' :  1,
+    'Enemy': 8,
+    'Reward' : 8,
+    'Consumable' : 8
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score' : 1,
+    'Lives': 2
+}
 
 
 class Player(GameObject):
@@ -25,7 +33,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ValueObject):
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53

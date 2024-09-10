@@ -6,12 +6,28 @@ import sys
 RAM extraction for the game Montezuma's Revenge.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
-                      'Score': 6, 'Life': 5}
-obj_tracker = {}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'Skull': 1,
+    'Spider': 1,
+    'Snake': 2,
+    'Key': 1,
+    'Amulet': 1,
+    'Torch': 1,
+    'Sword': 1,
+    'Barrier': 2,
+    'Beam': 8,
+    'Rope': 1,
+    'Ruby': 3
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Key_HUD': 4,
+    'Amulet_HUD': 1,
+    'Torch_HUD': 1,
+    'Sword_HUD': 2,
+    'Score': 6,
+    'Life': 5
+}
 
 class Player(GameObject):
     """
@@ -33,7 +49,7 @@ class Skull(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Skull, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 79, 57
         self.wh = 7, 13
         self.rgb = 236, 236, 236
@@ -47,7 +63,7 @@ class Spider(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Spider, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 79, 57
         self.wh = 8, 11
         self.rgb = 92, 186, 92
@@ -61,7 +77,7 @@ class Snake(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Snake, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 50, 80
         self.wh = 7, 13
         self.rgb = 192, 192, 192
@@ -75,7 +91,7 @@ class Key(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Key, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 89, 166
         self.wh = 7, 15
         self.rgb = 232, 204, 99
@@ -89,7 +105,7 @@ class Amulet(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Amulet, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 89, 166
         self.wh = 6, 15
         self.rgb = 232, 204, 99
@@ -103,7 +119,7 @@ class Torch(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Torch, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 89, 166
         self.wh = 6, 13
         self.rgb = 204, 216, 110
@@ -117,7 +133,7 @@ class Sword(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Sword, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 11, 54
         self.wh = 6, 15
         self.rgb = 214, 214, 214
@@ -131,7 +147,7 @@ class Ruby(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Ruby, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 89, 166
         self.wh = 7, 12
         self.rgb = 213, 130, 74
@@ -145,7 +161,7 @@ class Barrier(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Barrier, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 20, 54
         self.wh = 4, 37
         self.rgb = 232, 204, 99
@@ -159,7 +175,7 @@ class Beam(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Beam, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 140, 53
         self.wh = 4, 40
         self.rgb = 101, 111, 228
@@ -173,7 +189,7 @@ class Rope(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Rope, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 112, 96
         self.wh = 1, 39
         self.rgb = 232, 204, 99
@@ -213,7 +229,7 @@ class Key_HUD(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Key_HUD, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 56, 28
         self.wh = 7, 15
         self.rgb = 232, 204, 99
@@ -226,7 +242,7 @@ class Amulet_HUD(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Amulet_HUD, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
@@ -240,7 +256,7 @@ class Torch_HUD(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Torch_HUD, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 56, 28
         self.wh = 6, 13
         self.rgb = 232, 204, 99
@@ -254,7 +270,7 @@ class Sword_HUD(GameObject):
     
     def __init__(self, *args, **kwargs):
         super(Sword_HUD, self).__init__()
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._xy = 56, 28
         self.wh = 6, 15
         self.rgb = 232, 204, 99
@@ -267,7 +283,7 @@ class Platform(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Platform, self).__init__(*args, **kwargs)
+        super(Platform, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -281,7 +297,7 @@ class Ladder(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Ladder, self).__init__(*args, **kwargs)
+        super(Ladder, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -295,7 +311,7 @@ class Conveyer_Belt(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Conveyer_Belt, self).__init__(*args, **kwargs)
+        super(Conveyer_Belt, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -309,7 +325,7 @@ class Wall(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, rgb=(66, 158, 130), *args, **kwargs):
-        super(Wall, self).__init__(*args, **kwargs)
+        super(Wall, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -323,7 +339,7 @@ class Disappearing_Platform(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Disappearing_Platform, self).__init__(*args, **kwargs)
+        super(Disappearing_Platform, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -331,20 +347,6 @@ class Disappearing_Platform(GameObject):
         self.hud = False
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=True):
     """

@@ -15,92 +15,92 @@ objects_colors = {"player": [213, 130, 74],
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 213, 130, 74 
         self.hud = False
 
 class Player_Shot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 213, 130, 74 
         self.hud = False
 
 class Player_Shadow(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 0 
         self.hud = False
 
 class Hostile_Fighter(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 72, 160, 72
         self.hud = False
 
 class Hostile_Shot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 164, 74
         self.hud = False
 
 class Hostile_Orange(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 213, 130, 74
         self.hud = False
 
 class Tower(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 146, 70, 192
         self.hud = False
 
 class Fuel_Tank(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 110, 156, 66
         self.hud = False
 
 class Sentry(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 162, 162, 42
         self.hud = False
 
 class Satellite(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50
         self.hud = False
 
 class Zaxxon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 136, 146, 62
         self.hud = False
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 198, 108, 58
         self.hud = True
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 162, 162, 42
         self.hud = True
 
 class Fuel(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 162, 162, 42
         self.hud = True
 
 class Altitude(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 24, 59, 157
         self.hud = True
 

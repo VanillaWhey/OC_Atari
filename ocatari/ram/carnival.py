@@ -6,8 +6,22 @@ import sys
 RAM extraction for the game CARNIVAL. Supported modes: ram.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5, 'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'PlayerMissile': 1, 'Rabbit': 6, 'Duck': 5,'ExtraBullets': 4, 'Owl': 3, 'Wheel': 1, 'FlyingDuck': 6, 'AmmoBar': 1, 'BonusSign': 1, 'BonusValue': 1, 'PlayerScore': 1}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'PlayerMissile': 1,
+    'Rabbit': 6,
+    'Duck': 5,
+    'ExtraBullets': 4,
+    'Owl': 3,
+    'Wheel': 1,
+    'FlyingDuck': 6
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'AmmoBar': 1,
+    'BonusSign': 1,
+    'BonusValue': 1,
+    'PlayerScore': 1
+}
 
 class Player(GameObject):
     """
@@ -182,20 +196,6 @@ Y_POS = [89, 89, 68, 68, 47, 47]
 x_missile = 0
 y_prev_missile = 0
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=False):
     """

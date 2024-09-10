@@ -10,67 +10,67 @@ objects_colors = {"orange": [227, 151, 89], "red": [167, 26, 26], "white": [236,
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [227, 151, 89]
 
 
 class Player_Shot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [227, 151, 89]
 
 
 class Helicopter(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [167, 26, 26]
 
 
 class Hornet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [170, 170, 170]
 
 
 class Enemy_Shot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [252, 224, 112]
 
 
 class Ice(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [84, 138, 210]
 
 class Fire_Hole(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [72, 44, 0]
 
 
 class Eruption(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [26, 102, 26]
 
 
 class Diver(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [26, 102, 26]
 
 
 #  ---- HUD -----
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [252, 252, 84]
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [180, 122, 48]
 
 

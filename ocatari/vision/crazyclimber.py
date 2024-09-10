@@ -9,68 +9,68 @@ objects_colors = {"green": [111, 210, 111], "red": [240, 128, 128], "blue": [0, 
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [111, 210, 111]
 
 
 class Window(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [255, 255, 255]
 
 
 class Enemy_Red(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [200, 72, 72]
 
 
 class Enemy_Bird(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [214, 214, 214]
 
 
 class Yellow_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [210, 210, 64]
 
 
 class Purple_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [181, 108, 224]
 
 
 class Blue_Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [101, 160, 225]
 
 
 class Yellow_Ball(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [210, 210, 64]
 
 
 class Helicopter(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [66, 72, 200]
 
 
 #  ---- HUD -----
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [111, 210, 111]
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [72, 160, 72]
 
 

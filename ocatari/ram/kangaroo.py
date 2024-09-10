@@ -9,7 +9,7 @@ RAM extraction for the game KANGAROO. Supported modes: ram.
 
 """
 
-MAX_ESSENTIAL_OBJECTS = {
+MAX_NB_OBJECTS = {
     'Player': 1,
     'Child': 1,
     'Fruit': 3,
@@ -23,11 +23,9 @@ MAX_ESSENTIAL_OBJECTS = {
     'Time': 1,
 }
 
-MAX_OPTIONAL_OBJECTS = {
-    'Score': 1,
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1
 }
-
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
 
 
 class Player(GameObject):
@@ -193,21 +191,6 @@ class Time(ValueObject):
         self.value = 20
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
-
-
 # def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:
 #     mod = sys.modules[__name__]
 #     all_objects = {}
@@ -275,7 +258,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     monkey = objects[2:6]
 
-    for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
+    for i in range(MAX_NB_OBJECTS["Monkey"]):
         if ram_state[11 - i] != 255 and ram_state[11 - i] != 127:
             x = ram_state[15 - i] + 16
             y = ram_state[11 - i] * 8 + 5
@@ -285,7 +268,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             objects[2+i] = None
 
-    # Fallling coconut
+    # Falling coconut
     if ram_state[33] != 255:
         x = ram_state[34] + 14
         y = (ram_state[33] - 22 * ram_state[36]) * 8 + 9
@@ -298,7 +281,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     # Thrown coconuts
     # This projectiles visual representation seems to differ from its RAM x position,
     # therefore you will see it leaving the bounding box on both left and right depending on the situation
-    for i in range(MAX_ESSENTIAL_OBJECTS["ThrownCoconut"]):
+    for i in range(MAX_NB_OBJECTS["ThrownCoconut"]):
         if ram_state[25 + i] != 255:
             x = ram_state[28 + i] + 15
             y = (ram_state[25 + i] * 8) + 1
@@ -309,7 +292,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[7+i] = None
 
 
-    for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
+    for i in range(MAX_NB_OBJECTS["Fruit"]):
         properties = _get_fruit_properties(ram_state[42 + i])
         if properties is not None:
             fruit = objects[10+i]
@@ -390,8 +373,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
         # lives
         n_lives = ram_state[45]
-        for i in range(MAX_ESSENTIAL_OBJECTS["Life"]):
-            if i < n_lives and n_lives != 255:
+        for i in range(MAX_NB_OBJECTS["Life"]):
+            if i < n_lives != 255:
                 if objects[-8+i] is None:
                     objects[-8+i] = Life()
                 x = 16 + (i * 8)

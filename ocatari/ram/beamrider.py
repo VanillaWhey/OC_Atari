@@ -6,8 +6,16 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Player_Projectile':1, 'Torpedos': 1}  # Asteroid count can get really high
-MAX_NB_OBJECTS_HUD = {'Life': 1, 'HUD': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Player_Projectile':1,
+    'Torpedos': 1,
+    'Saucer': 7
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'Life': 1,
+    'HUD': 1
+}
 
 class Player(GameObject):
     """
@@ -177,21 +185,6 @@ class Life(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 210, 210, 64
-
-
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=True):

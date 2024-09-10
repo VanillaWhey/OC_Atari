@@ -28,109 +28,109 @@ objects_colors = {'player': [187, 187, 53],
 # the given color to the multicolor classes is the most outer one, so it fits with the surrounding rectangle
 class Player(GameObject):  # player could be shown over all enemies/other objects (see Figure_4.png)
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 187, 53
 
 
 class Cauldron(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 167, 26, 26  # , [184, 50, 50]]
 
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 228, 111, 111
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 187, 53
 
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 187, 53
 
 
 class Helmet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240, 128, 128  # [[240, 128, 128], [236, 236, 236]]
 
 
 class Shield(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 214, 214, 214
 
 
 class Lamp(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 53, 53
 
 
 class Apple(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50  # [[184, 50, 50], [110, 156, 66]]
 
 
 class Fish(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 198, 89, 179
 
 
 class Meat(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50  # [[184, 50, 50], [214, 214, 214]]
 
 
 class Mug(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 184, 50, 50  # [[184, 50, 50], [214, 214, 214]]
 
 
 class Reward50(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 198, 89, 179
 
 
 class Reward100(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 135, 183, 84
 
 
 class Reward200(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 195, 144, 61
 
 
 class Reward300(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 213, 130, 74
 
 
 class Reward400(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 135, 183, 84
 
 
 class Reward500(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 163, 57, 21
 
 

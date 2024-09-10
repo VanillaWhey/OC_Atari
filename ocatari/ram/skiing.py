@@ -6,8 +6,17 @@ import numpy as np
 RAM extraction for the game Skiing.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Tree': 4, 'Mogul': 3, 'Flag': 4, 'Score': 2, 'Clock': 8}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'Orientation': 1,
+    'Tree': 4,
+    'Mogul': 3,
+    'Flag': 4
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'Score': 2,
+    'Clock': 8
+}
 
 
 TREE_COLOR = {
@@ -44,6 +53,10 @@ class Player(GameObject):
         self.hud = False
         self.orientation = 8
 
+class Orientation(Player):
+    @property
+    def xywh(self):
+        return [self.orientation] * 4
 
 class Flag(GameObject):
     """
@@ -136,11 +149,7 @@ class Tree(GameObject):
         return isinstance(o, Tree) and o._subtype == self._subtype \
             and abs(self._xy[0] - o._xy[0]) < 7
 
-    @property
-    def xy(self):
-        return self._xy
-
-    @xy.setter
+    @GameObject.xy.setter
     def xy(self, xy):
         x, y = xy
         if self._xy[0] == x + 2:    # bug correction
@@ -187,20 +196,6 @@ class Score(GameObject):
 
 TYPE_TO_OBJ = {2: Flag, 5: Mogul, 85: Tree}
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=False):
     """
@@ -223,6 +218,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player.xy = (ram_state[25], ram_state[26]-80)
     player.orientation = ram_state[15]
     offset = 1 if not hud else 11
+
+    # Orientation
+    if offset < len(objects):
+        orient = objects[offset]
+    else:
+        orient = Orientation()
+        objects.append(orient)
+    orient.orientation = ram_state[15]
+    offset = offset + 1
+
     for i in range(8):
         height = 75 - ram_state[90+i]
         type = ram_state[70+i]
@@ -299,29 +304,4 @@ def _time_skiing(ram_state):
     # milliseconds
     time["milli_seconds"] = _convert_number(ram_state[106])
     return time
-
-def _get_object_state_size(hud):
-    objects = _get_max_objects(hud)
-    additional_feature = ["orientation"]
-    return len(objects)+len(additional_feature)
-
-def _get_object_state(reference_list, objects):
-
-    #import ipdb; ipdb.set_trace()
-    temp_ref_list = reference_list.copy()
-    state = reference_list.copy()
-    for o in objects: # populate out_vector with object instance
-        idx = temp_ref_list.index(o.category) #at position of first category occurance
-        flat = [item for sublist in o.h_coords for item in sublist]
-        state[idx] = flat #write the slice
-        temp_ref_list[idx] = "" #remove reference from reference list
-        if o.category == "Player":
-            state.append([o.orientation, o.orientation, o.orientation, o.orientation])    
-    for i, d in enumerate(temp_ref_list):
-        if d != "": #fill not populated category instances wiht 0.0's
-            state[i] = [0.0, 0.0, 0.0, 0.0]
-            if d == "Player":
-                state.append([0.0,0.0,0.0,0.0])
-    return np.asarray(state)
-    
     

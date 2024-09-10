@@ -9,37 +9,37 @@ birdcolors=[[195,144,61],[236,236,236],[232,204,99],[117,128,240]]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 72,160,72
         self.hud = False
 
 class Gopher(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 72,44,0
         self.hud = False
 
 class Carrot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 162,98,33
         self.hud = False
 
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 45,50,184 
         self.hud = False
 
 class Empty_block(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223,183,85 
         self.hud = False
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 195,144,65 
         self.hud = True
 

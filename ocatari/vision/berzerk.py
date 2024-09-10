@@ -12,43 +12,43 @@ enemy_colors = {"yellow": [210, 210, 64], "orange": [198, 108, 58], "gray": [214
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240, 170, 103
 
 
 class PlayerMissile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240, 170, 103
 
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 210, 64
 
 
 class EnemyMissile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 210, 64
 
 
 class Logo(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 232, 232, 74
 
 
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 232, 232, 74
 
 
 class RoomCleared(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 232, 232, 74
 
 

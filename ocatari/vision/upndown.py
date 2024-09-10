@@ -12,22 +12,22 @@ objects_colors = {"player_white": [192, 192, 192], "t_orange": [213, 130, 74], "
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [192, 192, 192]
 
 class Truck(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [214, 92, 92]
 
 class Flag(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [200, 72, 72]
 
 class Collectable(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [200, 72, 72]
 
 
@@ -35,18 +35,18 @@ class Collectable(GameObject):
 #  ---- HUD -----
 class HUD_Flag(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [210, 164, 74]
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [168, 48, 143]
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [198, 108, 58]
 
 

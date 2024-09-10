@@ -9,8 +9,21 @@ from math import ceil
 RAM extraction for the game Chopper Command.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'MiniPlayer': 1, 'Truck': 3, 'MiniTruck': 9, 'MiniEnemy': 12, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Truck': 3, 'MiniPlayer': 1, 'MiniEnemy': 12, 'MiniTruck': 9, 'Shot': 1, 'EnemyPlane': 3, 'EnemyHelicopter': 3, 'Bomb': 3, 'Score': 4, 'Life': 2 }
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'MiniPlayer': 1,
+    'Truck': 3,
+    'MiniTruck': 9,
+    'MiniEnemy': 12,
+    'Shot': 1,
+    'EnemyPlane': 3,
+    'EnemyHelicopter': 3,
+    'Bomb': 3
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'Score': 4,
+    'Life': 2
+}
 
 
 # parses MAX_NB* dicts, returns default init list of objects

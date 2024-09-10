@@ -6,10 +6,22 @@ RAM extraction for the game Atlantis. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
-                   'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'BanditBomber': 2}
-MAX_NB_OBJECTS_HUD = {'Sentry': 2, 'AcropolisCommandPost': 1, 'Generator': 3, 'DomedPalace': 1, 
-                      'BridgedBazaar': 1, 'AquaPlane': 1, 'Projectile': 2, 'GorgonShip': 4, 'Deathray': 1, 'Score': 1, 'BanditBomber': 3}
+MAX_NB_OBJECTS =  {
+    'Sentry': 2,
+    'AcropolisCommandPost': 1,
+    'Generator': 3,
+    'DomedPalace': 1,
+    'BridgedBazaar': 1,
+    'AquaPlane': 1,
+    'Projectile': 2,
+    'GorgonShip': 4,
+    'Deathray': 1,
+    'BanditBomber': 2
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1
+}
+MAX_NB_OBJECTS_HUD['BanditBomber'] = 3  # todo why?
 
 class Sentry(GameObject):
     """

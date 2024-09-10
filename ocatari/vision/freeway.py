@@ -11,19 +11,19 @@ car_colors = {"car1": [167, 26, 26], "car2": [180, 231, 117], "car3": [105, 105,
 
 class Chicken(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 252, 252, 84
 
 
 class Car(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 167, 26, 26
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 228, 111, 111
 
 

@@ -1,7 +1,16 @@
 from .game_objects import GameObject
-import sys 
-MAX_NB_OBJECTS = {"Player": 1, "Gopher":1, "Carrot":3,"Empty_block":38}
-MAX_NB_OBJECTS_HUD = {"Bird":1, "Score":5}
+import sys
+
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Gopher': 1,
+    'Carrot': 3,
+    'Empty_block': 38
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Bird': 1,
+    'Score': 5
+}
 
 full_list=[(140,175),(12,175),(27,175),(45,175),(108,175),(124,175),
            (140,168),(12,168),(27,168),(45,168),(108,168),(124,168),
@@ -70,22 +79,6 @@ class Score(GameObject):
         self.wh = (5,9)
         self.rgb = 195,144,65 
         self.hud = True
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

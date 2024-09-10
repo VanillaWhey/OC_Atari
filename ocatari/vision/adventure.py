@@ -10,7 +10,7 @@ objects_colors = {"player": [], "bridge edge": [168, 72, 158], "black bat": [0, 
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [252, 252, 84]
         self.wh = 5, 8
 
@@ -18,14 +18,14 @@ class Player(GameObject):
 # Each dragon has a different purpose that's why I thought it might be more relevant to have a class for each dragon
 class YellowDragon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.alive = True
 
 
 class GreenDragon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.alive = True
 
@@ -38,43 +38,43 @@ class RedDragon(GameObject):
 
 class BlackBat(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
 
 
 class DragonSword(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
 
 
 class Key(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
 
 
 class Magnet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
 
 
 class BridgeEdge(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [168, 72, 158]
 
 
 class Gate(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
 
 
 class Chalice(GameObject):
     def __init__(self, *args: object, **kwargs: object) -> object:
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [168, 72, 158]
 
 

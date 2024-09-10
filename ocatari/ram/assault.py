@@ -6,9 +6,19 @@ import sys
 RAM extraction for the game ASSAULT. Supported modes: ram.
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissileVertical': 1, 'PlayerMissileHorizontal': 1, 'MotherShip': 1,
-                  'Enemy': 9, 'EnemyMissile': 1}
-MAX_NB_OBJECTS_HUD = {'PlayerScore': 6, 'Lives': 3, 'Health': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'PlayerMissileVertical': 1,
+    'PlayerMissileHorizontal': 1,
+    'MotherShip': 1,
+    'Enemy': 9,
+    'EnemyMissile': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'PlayerScore': 6,
+    'Lives': 3,
+    'Health': 3
+}
 
 
 class Player(GameObject):
@@ -473,7 +483,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         if ram_state[21] == 70:
             health.rgb = 200, 72, 72
-        objects[14+ram_state[101]] = health
+        objects[-1] = health
 
 
 def _detect_objects_assault_raw(info, ram_state):

@@ -4,9 +4,16 @@ from .game_objects import GameObject
 RAM extraction for the game Fishing Derby.
 """
 
-MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
-MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
-                      "ScoreP2": 1}
+MAX_NB_OBJECTS = {
+    'PlayerOneHook': 1,
+    'PlayerTwoHook': 1,
+    'Fish': 6,
+    'Shark': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'ScorePlayerOne': 1,
+    'ScorePlayerTwo': 1
+}
 
 
 class Fish(GameObject):
@@ -93,10 +100,6 @@ class ScorePlayerTwo(GameObject):
         self.xy = 113, 8
         self.wh = 6, 8
         self.value = 0
-
-
-def _get_max_objects(hud=False):
-    return
 
 
 def _init_objects_ram(hud=False):

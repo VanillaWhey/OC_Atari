@@ -7,11 +7,14 @@ The map can be found here, if needed :
 https://atariage.com/2600/archives/strategy_adventuremap.html?SystemID=2600
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 """
+# todo populate
+MAX_NB_OBJECTS = {}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {}
 
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [252, 252, 84]
         self.wh = 3, 8
 
@@ -19,7 +22,7 @@ class Player(GameObject):
 # Each dragon has a different purpose that's why I thought it might be more relevant to have a class for each dragon
 class YellowDragon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.wh = 1, 1
         self.alive = True
@@ -27,7 +30,7 @@ class YellowDragon(GameObject):
 
 class GreenDragon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.wh = 1, 1
         self.alive = True
@@ -42,76 +45,62 @@ class RedDragon(GameObject):
 
 class BlackBat(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
         self.wh = 1, 1
 
 
 class DragonSword(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.wh = 1, 1
 
 
 class YellowKey(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [223, 192, 111]
         self.wh = 8, 9
 
 class BlackKey(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
         self.wh = 8, 9
 
 class WhiteKey(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [255, 255, 255]
         self.wh = 8, 9
 
 
 class Magnet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
         self.wh = 1, 1
 
 
 class BridgeEdge(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [168, 72, 158]
         self.wh = 1, 1
 
 
 class Gate(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [0, 0, 0]
         self.wh = 1, 1
 
 
 class Chalice(GameObject):
     def __init__(self, *args: object, **kwargs: object) -> object:
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [168, 72, 158]
-
-
-def _get_max_objects(hud=False):
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return
-    return
 
 
 def _init_objects_ram(hud=False):

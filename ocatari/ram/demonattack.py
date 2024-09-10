@@ -8,8 +8,16 @@ RAM extraction for the game Demon Attack.
 """
 
 # TODO: populate 
-MAX_NB_OBJECTS =  {"Player": 1}
-MAX_NB_OBJECTS_HUD = {}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'ProjectileFriendly': 1,
+    'ProjectileHostile': 8,
+    'Enemy': 3
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Live': 4
+}
 
 class Player(GameObject):
     """
@@ -89,20 +97,6 @@ class Live(GameObject):
         self.hud = True
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def calculate_small_projectiles_from_bitmap(bitmap, basex):
     result = []
@@ -192,7 +186,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         proj_friendly.xy = 2 + calc_x(ram_state[22]), 178 - ram_state[21]
 
     objects.clear()  # giga ugly but i didnt find a better solution
-    objects.extend([player, proj_friendly, score])
+    objects.extend([player, proj_friendly])
+    if hud:
+        objects.append(score)
     objects.extend(calculate_small_projectiles_from_bitmap(ram_state[37:47], 3 + calc_x(ram_state[20])))
 
     for i in range(3):

@@ -15,67 +15,67 @@ object_colors = {"most": [223, 183, 85], "truck": [0, 0, 0], "enemy_helicopter":
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 
 class MiniPlayer(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 124, 44, 0
 
 
 class Truck(GameObject):
     def __init__(self,*args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 0
 
 
 class MiniTruck(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 236, 200, 96
 
 
 class EnemyHelicopter(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 236, 236, 236
 
 
 class EnemyPlane(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 148
 
 
 class MiniEnemy(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 236, 200, 96
 
 
 class Bomb(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 
 class Shot(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 100  # blau ist höher, aber sonst random
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 223, 183, 85
 
 # Mini-Spielbereich: (minx,miny,maxX,maxY): (55,178,103,186)

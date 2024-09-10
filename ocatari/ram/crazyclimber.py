@@ -1,8 +1,20 @@
 from .game_objects import GameObject, ValueObject
-import sys 
+import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Window": 72, "Enemy_Red": 1, "Enemy_Bird": 1, "Projectile": 1, "Helicopter": 1}
-MAX_NB_OBJECTS_HUD = {}# 'Score': 1}
+from ..vision.crazyclimber import Yellow_Ball
+
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Window': 72,
+    'Enemy_Red': 1,
+    'Enemy_Bird': 1,
+    'Projectile': 1,
+    'Helicopter': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Life': 3
+}
 
 class Player(GameObject):
     def __init__(self):
@@ -40,8 +52,13 @@ class Enemy_Bird(GameObject):
         self.hud = False
         self.orientation = 1
 
+class Projectile(GameObject):
+    @property
+    def category(self):
+        return "Projectile"
 
-class Yellow_Projectile(GameObject):
+
+class Yellow_Projectile(Projectile):
     def __init__(self):
         super(Yellow_Projectile, self).__init__()
         self._xy = 0, 0
@@ -49,7 +66,7 @@ class Yellow_Projectile(GameObject):
         self.rgb = 210, 210, 64
         self.hud = False
 
-class Purple_Projectile(GameObject):
+class Purple_Projectile(Projectile):
     def __init__(self):
         super(Purple_Projectile, self).__init__()
         self._xy = 0, 0
@@ -57,7 +74,7 @@ class Purple_Projectile(GameObject):
         self.rgb = 181, 108, 224
         self.hud = False
 
-class Blue_Projectile(GameObject):
+class Blue_Projectile(Projectile):
     def __init__(self):
         super(Blue_Projectile, self).__init__()
         self._xy = 0, 0
@@ -66,7 +83,7 @@ class Blue_Projectile(GameObject):
         self.hud = False
 
 
-class Yellow_Ball(GameObject):
+class Yellow_Ball(Projectile):
     def __init__(self):
         super(Yellow_Ball, self).__init__()
         self._xy = 0, 0
@@ -101,22 +118,6 @@ class Life(GameObject):
         self.wh = (5, 6)
         self.rgb = 72, 160, 72
         self.hud = False
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

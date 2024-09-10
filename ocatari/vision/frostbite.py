@@ -19,104 +19,104 @@ frostbite=[[84,138,210],[66,114,194],[45,87,176],[24,59,157]]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 198,108,58
         self.hud = False
 
 
 class GreenFish(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 111,210,111
         self.hud = False
 
 
 class FrostBite(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 84,38,210
         self.hud = False
 
 
 class WhitePlate(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 214,214,214
         self.hud = False
 
 
 class BluePlate(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 84,138,210
         self.hud = False
 
 
 class Bird(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 132,144,252
         self.hud = False
 
 
 class Bear(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0,0,0
         self.hud = False
 
 
 class Crab(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 213,130,74
         self.hud = False
 
 
 class Clam(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210,210,64
         self.hud = False
 
 class House(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 142,142,142
         self.hud = False
 
 
 class CompletedHouse(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0,0,0
         self.hud = False
 
 
 class LifeCount(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb =132,144,252
         self.hud = True
 
 
 class PlayerScore(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb =132,144,252
         self.hud = True
 
 
 class Degree(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb =132,144,252
         self.hud = True
 
 
 # class PlayerScore(GameObject):
 #     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
+#         super().__init__()
 #         self.rgb = 0,0,0
 #         self.hud = True
 

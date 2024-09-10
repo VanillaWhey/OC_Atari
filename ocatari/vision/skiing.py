@@ -10,7 +10,7 @@ logo_c = [0, 0, 0]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 214, 92, 92
         self.hud = False
 

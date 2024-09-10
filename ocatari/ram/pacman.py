@@ -8,8 +8,16 @@ RAM extraction for the game Ms. Pac-Man.
 """
 
 # not sure about this one TODO: validate
-MAX_NB_OBJECTS =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Ghost': 4, 'PowerPill': 4, 'Score': 3, 'Life': 2}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Ghost': 4,
+    'PowerPill': 4,
+    'Vitamin': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 3,
+    'Life': 3
+}
 
 gcolor = [(111, 111, 215), (144, 144, 252)]
 ghost_vulnerable = False
@@ -53,6 +61,9 @@ class Ghost(GameObject):
 #         self.rgb = 252, 144, 200
 #         self.hud = False
 
+class Vitamin(GameObject):
+    pass
+
 
 pps = [(6, 39), (6, 171), (150, 39), (150, 171)]
 class PowerPill(GameObject):
@@ -92,22 +103,6 @@ class Life(GameObject):
         self.rgb = 72, 176, 110
         self.hud = True
         self.value = 3
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
-
 
 def _init_objects_ram(hud=False):
     """

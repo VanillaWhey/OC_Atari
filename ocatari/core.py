@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, FEATURE_SIZE
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -21,6 +21,7 @@ except ModuleNotFoundError:
 import warnings
 
 UPSCALE_FACTOR = 4
+BUFFER_WINDOW_SIZE = 4
 
 
 try:
@@ -80,7 +81,7 @@ AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix",
 
 
 # TODO: complete the docstring 
-class OCAtari:
+class OCAtari(gym.Env):
     """
     The OCAtari environment. Initialize it to get a Atari environments with objects tracked.
 
@@ -90,14 +91,16 @@ class OCAtari:
     :type mode: str
     :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
-    :param obs_mode: Define the observation mode. Set to `dqn` (84x84, grayscaled), `ori` (210x160x3, RGB image), `obj` (#Objectsx4). `dqn` and `ori` are also organized in a stack of the last 4 frames.
+    :param obs_mode: Define the observation mode. Set to `dqn` (84x84, grayscaled), `ori` (210x160x3, RGB image), `obj` (#ObjectsxFEATURE_SIZE). `dqn` and `ori` are also organized in a stack of the last 4 frames.
     :type obs_mode: str
     
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
     def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
-                 render_mode=None, render_oc_overlay=False, *args, **kwargs):
+                 render_mode=None, render_oc_overlay=False, gym_args=None, *args, **kwargs):
+        if gym_args is None:
+            gym_args = {}
         if "ALE/" in env_name: #case if v5 specified
             to_check = env_name[4:8]
             game_name = env_name.split("/")[1].split("-")[0].split("No")[0].split("Deterministic")[0]
@@ -112,13 +115,13 @@ class OCAtari:
             self._covered_game = True
         
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
-        self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **kwargs)
+        self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **gym_args)
         self.game_name = game_name
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
-        self.buffer_window_size = 4
+        self.buffer_window_size = BUFFER_WINDOW_SIZE
         self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
@@ -146,7 +149,7 @@ class OCAtari:
             if torch_imported:
                 self._fill_buffer = self._fill_buffer_dqn
                 self._reset_buffer = self._reset_buffer_dqn
-                self._env.observation_space = gym.spaces.Box(0,255.0,(4,84,84))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
             else:
                 print("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
@@ -155,7 +158,7 @@ class OCAtari:
         elif obs_mode == "obj":
             print("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud),4))
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name, self.hud), FEATURE_SIZE))
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []

@@ -4,23 +4,24 @@ from .game_objects import GameObject, ValueObject, Orientation
 from ._helper_methods import _convert_number
 import sys
 
+from ..vision.donkeykong import DonkeyKong
+
 """
 RAM extraction for the game DONKEYKONG. Supported modes: ram.
 
 """
-
-MAX_ESSENTIAL_OBJECTS = {
-    'Player': 1, 'Girlfriend': 1, 'Ladder': 10, 'Hammer': 1, 'Barrels' : 10
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Girlfriend': 1,
+    'Ladder': 10,
+    'Hammer': 1,
+    'Barrel' : 10,
+    'DonkeyKong': 1
 }
-
-MAX_OPTIONAL_OBJECTS = {
+MAX_NB_OBJECTS_HUD  = MAX_NB_OBJECTS | {
     'Score': 1,
+    'Life': 2
 }
-
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
-
-obj_tracker = {}
-
 
 
 class Player(GameObject):
@@ -158,21 +159,6 @@ class Life(GameObject):
 #         self.rgb = 160, 171, 79
 #         self.hud = False
 #         self.value = 20
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
 # def _init_all_objects(hud=False):

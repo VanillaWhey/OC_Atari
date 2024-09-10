@@ -10,49 +10,49 @@ X_MAX_GAMEZONE = 153
 
 class Flipper(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 236, 236, 236
         self.hud = False
 
 
 class Ball(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 104, 72, 198
         self.hud = False
 
 
 class Spinner(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 236, 236, 236
         self.hud = False
 
 
 class DropTarget(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 210, 164, 74
         self.hud = False
 
 
 class Plunger(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 159, 71
         self.hud = False
 
 
 class Bumper(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 104, 72, 198
         self.hud = False
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         value = 0
         self.rgb = 187, 159, 71
         self.hud = True
@@ -60,7 +60,7 @@ class Score(GameObject):
 
 class LifeUsed(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         value = 0
         self.rgb = 187, 159, 71
         self.hud = True
@@ -68,7 +68,7 @@ class LifeUsed(GameObject):
 
 class DifficultyLevel(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         value = 1
         self.rgb = 187, 159, 71
         self.hud = True

@@ -11,9 +11,28 @@ RAM extraction for the game Pitfall.
 
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
-                  "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4}
-MAX_NB_OBJECTS_HUD = {"LifeCount": 3, "PlayerScore": 6, "Timer": 5}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Wall': 1,
+    'Logs': 5,
+    'StairPit': 1,
+    'Stair': 1,
+    'Pit': 3,
+    'Scorpion': 1,
+    'Rope': 1,
+    'Snake': 1,
+    'Tarpit': 1,
+    'Waterhole': 1,
+    'Crocodile': 3,
+    'GoldenBar': 1,
+    'Fire': 1,
+    'Platform': 4
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'LifeCount': 3,
+    'PlayerScore': 6,
+    'Timer': 5
+}
 
 
 class Player(GameObject):
@@ -243,7 +262,7 @@ class Platform(GameObject):
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(Platform, self).__init__(*args, **kwargs)
+        super(Platform, self).__init__()
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -328,20 +347,6 @@ def get_pos_rope(ram_state):
         sign = 1
     # return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope + np.arctan(theta_t) * supplement_y), y
     return int(x_fixation_rope + np.sin(theta_t) * sign * length_rope), y
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

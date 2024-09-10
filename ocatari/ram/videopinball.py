@@ -4,9 +4,18 @@ from .game_objects import GameObject
 RAM extraction for the game Fishing Derby.
 """
 
-MAX_NB_OBJECTS = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1}
-MAX_NB_OBJECTS_HUD = {"Player1FishingString": 1, "Player2FishingString": 1, "Fish": 6, "Shark": 1, "ScoreP1": 1,
-                      "ScoreP2": 1}
+MAX_NB_OBJECTS = {
+    'Flipper': 2,
+    'Ball': 1,
+    'Spinner': 2,
+    'DropTarget': 12,
+    'Bumper': 9
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'LifeUsed': 1,
+    'DifficultyLevel': 1
+}
 
 bumpers = (((104, 112), (16, 32)), ((104, 48), (4, 32)), ((116, 48), (4, 32)), ((40, 112), (16, 32)), ((40, 48), (4, 32)), ((52, 48), (4, 32)), ((72, 104), (16, 8)), ((72, 48), (16, 32)))
 droptgts = (((60, 24), (7, 14)), ((76, 24), (7, 14)), ((92, 24), (7, 14)), 
@@ -48,8 +57,8 @@ def manage_dptgts(dptgts, ram):
 
 
 class Flipper(GameObject):
-    def __init__(self, left, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, left=True):
+        super().__init__()
         self.xy = (64, 184) if left else (83, 184)
         self.wh = 13, 6
         self.rgb = 236, 236, 236
@@ -58,8 +67,8 @@ class Flipper(GameObject):
 
 
 class Ball(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.xy = 149, 129
         self.wh = 2, 4
         self.rgb = 104, 72, 198
@@ -67,8 +76,8 @@ class Ball(GameObject):
 
 
 class Spinner(GameObject):
-    def __init__(self, left, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, left=True):
+        super().__init__()
         self.xy = (30, 91) if left else (126, 91)
         self.wh = 6, 10
         self.rgb = 236, 236, 236
@@ -76,8 +85,8 @@ class Spinner(GameObject):
 
 
 class DropTarget(GameObject):
-    def __init__(self, xy, wh, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, xy=(0, 0), wh=(0, 0)):
+        super().__init__()
         self.xy = xy
         self.wh = wh
         self.rgb = 210, 164, 74
@@ -86,15 +95,15 @@ class DropTarget(GameObject):
 
 
 class Plunger(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.rgb = 187, 159, 71
         self.hud = False
 
 
 class Bumper(GameObject):
-    def __init__(self, xy, wh, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, xy=(0, 0), wh=(0, 0)):
+        super().__init__()
         self.xy = xy
         self.wh = wh
         self.rgb = 104, 72, 198
@@ -102,8 +111,8 @@ class Bumper(GameObject):
 
 
 class Score(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.value = 0
         self.xy = 64, 3
         self.wh = 92, 10
@@ -112,8 +121,8 @@ class Score(GameObject):
 
 
 class LifeUsed(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.value = 0
         self.xy = 36, 3
         self.wh = 12, 10
@@ -122,16 +131,13 @@ class LifeUsed(GameObject):
 
 
 class DifficultyLevel(GameObject):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.xy = 4, 3
         self.wh = 12, 10
         self.value = 1
         self.rgb = 187, 159, 71
         self.hud = True
-
-def _get_max_objects(hud=False):
-    return
 
 
 def _init_objects_ram(hud=False):

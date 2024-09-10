@@ -15,61 +15,61 @@ ground_colors = [(110, 156, 66), (66, 114, 194), (198, 108, 58), (66, 72, 200),
 
 class CentipedeSegment(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [184, 70, 162]
 
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [181, 83, 40]
 
 
 class Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [181, 83, 40]
 
 
 class Mushroom(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [181, 83, 40]
 
 
 class Spider(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [146, 70, 192]
 
 
 class Flea(GameObject):  
     def __init__(self, *args, **kwargs):  
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [45, 50, 185]
 
 
 class Scorpion(GameObject):
     def __init__(self, *args, **kwargs):  
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [84, 138, 210]
 
 
 class Life(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [188, 144, 252]
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [188, 144, 252]
 
 
 class Ground(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = [110, 156, 66]
 
 

@@ -10,49 +10,49 @@ barrier_colors=[[162,134,56],[200,72,72],[82,126,45]]
 
 class Player(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 169,128,240 
         self.hud = False
 
 class Enemy(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240,240,240 
         self.hud = False
 
 class Swirl(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 181, 83, 40 
         self.hud = False
 
 class Enemy_Missile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 169,128,240 
         self.hud = False
 
 class Barrier(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 163,57,21
         self.hud = False
 
 class Player_Bullet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 169,128,240
         self.hud = False
 
 class Shield_Block(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 163,57,21
         self.hud = False
 
 class Canon(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 163,57,21
         self.hud = False
 

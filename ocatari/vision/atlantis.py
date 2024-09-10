@@ -30,70 +30,70 @@ objects_colors = {"sentry": [[252, 224, 112], [111, 210, 111], [84, 138, 210], [
 
 class Sentry(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 111, 210, 111
 
 
 # No clue how the projectiles work
 class Projectile(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 125, 48, 173
         # self.rgb = 184, 70, 162
 
 
 class AquaPlane(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 252, 144, 144
 
 
 class DomedPalace(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 240, 170, 103
 
 
 class Generator(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 117, 231, 194
 
 
 class BridgedBazaar(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 214, 214, 214
 
 
 class AcropolisCommandPost(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 227, 151, 89
 
 
 class BanditBomber(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 125, 48, 173
 
 
 class GorgonShip(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 187, 187, 53
 
 
 # Not implemented in vision due to it having the same colors as the environment
 class Deathray(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 101, 209, 174
 
 
 class Score(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 252, 188, 116
 
 

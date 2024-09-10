@@ -2,8 +2,24 @@ from .game_objects import GameObject, ValueObject
 from ._helper_methods import number_to_bitfield
 import sys 
 
-MAX_NB_OBJECTS = {"Player": 1, "Player_Shot": 1, "Enemy_Green": 8, "Enemy_Green_Shot": 1, "Enemy_Black": 8, "Enemy_Black_Shot": 1, "Enemy_Yellow": 8, "Enemy_Yellow_Shot": 1, "Enemy_Blue": 8, "Enemy_Blue_Shot": 1, "Enemy_Orange": 8, "Enemy_Orange_Shot": 1}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Player_Shot": 1, "Enemy_Green": 8, "Enemy_Green_Shot": 1, "Enemy_Black": 8, "Enemy_Black_Shot": 1, "Enemy_Yellow": 8, "Enemy_Yellow_Shot": 1, "Enemy_Blue": 8, "Enemy_Blue_Shot": 1, "Enemy_Orange": 8, "Enemy_Orange_Shot": 1, "Score": 1, "Life": 4}# 'Score': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Player_Shot': 1,
+    'Enemy_Green': 8,
+    'Enemy_Green_Shot': 1,
+    'Enemy_Black': 8,
+    'Enemy_Black_Shot': 1,
+    'Enemy_Yellow': 8,
+    'Enemy_Yellow_Shot': 1,
+    'Enemy_Blue': 8,
+    'Enemy_Blue_Shot': 1,
+    'Enemy_Orange': 8,
+    'Enemy_Orange_Shot': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Life': 4
+}
 
 class Player(GameObject):
     def __init__(self):
@@ -131,20 +147,6 @@ class Life(GameObject):
         self.hud = True
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 
 def _init_objects_ram(hud=False):

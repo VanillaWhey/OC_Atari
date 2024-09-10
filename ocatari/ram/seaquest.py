@@ -9,7 +9,7 @@ from itertools import chain
 RAM extraction for the game SEAQUEST. Supported modes: ram.
 """
 
-MAX_ESSENTIAL_OBJECTS = {
+MAX_NB_OBJECTS = {
     'Player': 1,
     'Diver': 4,
     'Shark': 12,
@@ -22,13 +22,11 @@ MAX_ESSENTIAL_OBJECTS = {
     'CollectedDiver': 6,
 }
 
-MAX_OPTIONAL_OBJECTS = {
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1,
     'OxygenBarDepleted': 1,
+    'OxygenBarLogo': 1,
 }
-
-# MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
-MAX_ALL_OBJECTS = dict(chain(MAX_ESSENTIAL_OBJECTS.items(),MAX_OPTIONAL_OBJECTS.items()))
 
 
 class Player(GameObject):
@@ -200,21 +198,6 @@ class CollectedDiver(GameObject):
         self.rgb = 24, 26, 167
         self.wh = 8, 9
         self.hud = True
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_ALL_OBJECTS)
-    return fromdict(MAX_ESSENTIAL_OBJECTS)
 
 
 # def _init_all_objects() -> Dict[Type[GameObject], Sequence[GameObject]]:

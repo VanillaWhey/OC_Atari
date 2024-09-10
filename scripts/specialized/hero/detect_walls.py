@@ -16,13 +16,13 @@ objects_colors = {"brown walls": [[144, 72, 17], [162, 98, 33], [180, 122, 48]],
 
 class Wall(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.destructible: bool = False
 
 
 class LavaWall(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.destructible: bool = False
 
 

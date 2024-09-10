@@ -2,6 +2,8 @@ import sys
 from termcolor import colored
 import numpy as np
 
+FEATURE_SIZE = 4
+
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
     game_module = '.'.join(p_module)
@@ -74,8 +76,8 @@ def get_object_state_size(game_name, hud):
     try:
         mod = sys.modules[game_module]
         if hud:
-            return len(mod.MAX_NB_OBJECTS_HUD)
-        return len(mod.MAX_NB_OBJECTS)
+            return np.sum(list(mod.MAX_NB_OBJECTS_HUD.values()))
+        return np.sum(list(mod.MAX_NB_OBJECTS.values()))
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))
         raise err
@@ -105,8 +107,8 @@ def get_object_state(reference_list, objects, game_name):
                 state[idx] = o.xywh #write the slice
                 temp_ref_list[idx] = "" #remove reference from reference list
             for i, d in enumerate(temp_ref_list):
-                if d != "": #fill not populated category instances wiht 0.0's
-                    state[i] = [0.0, 0.0, 0.0, 0.0]
+                if d != "": #fill not populated category instances with 0.0's
+                    state[i] = [0.0] * FEATURE_SIZE
             return state
         except AssertionError as err:
             raise err

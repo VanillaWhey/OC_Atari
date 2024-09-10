@@ -6,10 +6,16 @@ import sys
 RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
-
-MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Score': 1, 'Clock': 1}
-obj_tracker = {}
+# todo insert all possible objects
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'Car': 1,
+    'Clue': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Score': 1,
+    'Clock': 1
+}
 
 class Player(GameObject):
     """
@@ -164,13 +170,13 @@ class Barrier(GameObject):
         self.hud = False
 
 
-class Passge(GameObject):
+class Passage(GameObject):
     """
     The passages into alleys or park lanes.
     """
     
     def __init__(self):
-        super(Passge, self).__init__()
+        super(Passage, self).__init__()
         self._xy = 0, 0
         self.wh = 32, 22
 
@@ -210,7 +216,7 @@ class Bank_Sign(GameObject):
     """
     
     def __init__(self):
-        super(Police_Sign, self).__init__()
+        super(Bank_Sign, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 82, 126, 45
@@ -360,20 +366,6 @@ class Clock(ValueObject):
         self.hud = True
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _init_objects_ram(hud=True):
     """
@@ -463,7 +455,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             else:
                 objects[4] = None
         elif ram_state[41] == 5 or ram_state[41] == 6:
-            obj = Passge()
+            obj = Passage()
             obj.xy = 16 + ram_state[47], 161 - ram_state[38]
         elif ram_state[41] == 10:
             obj = Mud()

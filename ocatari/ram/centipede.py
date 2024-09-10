@@ -7,8 +7,20 @@ import sys
 RAM extraction for the game Centipede.
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Spider': 1, 'Flea': 1}
-MAX_NB_OBJECTS_HUD =  {'Player': 1, 'Projectile': 1, 'CentipedeSegment': 9, 'Mushroom': 42, 'Score': 4, 'Life': 2, 'Spider': 1, 'Flea': 1, 'Scorpion': 1}
+MAX_NB_OBJECTS =  {
+    'Player': 1,
+    'Projectile': 1,
+    'CentipedeSegment': 9,
+    'Mushroom': 42,
+    'Spider': 1,
+    'Flea': 1,
+    'Scorpion': 1
+}
+MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
+    'Score': 4,
+    'Life': 2,
+    'Ground': 1
+}
 
 base_colors = [(181, 83, 40), (45, 50, 184), (187, 187, 53), (184, 70, 162), 
                (184, 50, 50), (146, 70, 192), (110, 156, 66), (84, 138, 210)]
@@ -170,20 +182,6 @@ class Life(GameObject):
         self.hud = True
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
 
 def _column_to_y(column):
     """

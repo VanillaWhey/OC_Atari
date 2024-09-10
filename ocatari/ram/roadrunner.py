@@ -1,12 +1,25 @@
 from .game_objects import GameObject
-import sys 
+import sys
 
 """
 RAM extraction for the game Road Runner.
 """
 
-MAX_NB_OBJECTS = {"Player": 1, "Enemy": 1, "BirdSeeds": 1, "Truck": 6}
-MAX_NB_OBJECTS_HUD = {'Cactus': 6, 'Sign': 1}# 'Score': 1}
+MAX_NB_OBJECTS = {
+    'Player': 1,
+    'Enemy': 1,
+    'BirdSeeds': 2,
+    'Truck': 6,
+    'AcmeMine': 1,
+    'RoadCrack': 1,
+    'Turret': 1,
+    'TurretBall': 1
+}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
+    'Cactus': 6,
+    'Sign': 1,
+    'Bird': 2
+}# 'Score': 1}
 
 
 class Player(GameObject):
@@ -169,23 +182,6 @@ class PlayerScore(GameObject):
         self._xy = 0,0
         self.wh=(7,5)
         self.hud = True
-
-
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
-
 
 def _init_objects_ram(hud=False):
     """

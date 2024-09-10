@@ -19,17 +19,10 @@ def _convert_number(number):
     :rtype: int
     """
     number_str = str(hex(number))
-    number_list = [*number_str]
-    number_str = ""
-    count = 0
-    for x in number_list:
-        if count > 1:
-            number_str += x
-        count += 1
     try:
-        number = int(number_str)
+        number = int(number_str[2:])
     except ValueError as e:
-        number = None
+        number = 0
     return number
 
 

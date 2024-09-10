@@ -21,25 +21,25 @@ class Player(GameObject):
 
 class Alien(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 134, 134, 29
 
 
 class Satellite(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 151, 25, 122
 
 
 class Shield(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 181, 83, 40
 
 
 class Bullet(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 142, 142, 142
 
 
@@ -54,7 +54,7 @@ class Score(GameObject):
 
 class Lives(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 162, 134, 56
 
 

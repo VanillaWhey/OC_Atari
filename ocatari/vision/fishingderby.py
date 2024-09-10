@@ -9,41 +9,41 @@ objects_colors = {"shark": [0, 0, 0], "fish": [232, 232, 74],
 
 class Shark(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 0
         self.direction = True  # is the shark going from right to left
 
 
 class Fish(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 232, 232, 74
         self.hooked = False
 
 
 class PlayerOneHook(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 232, 232, 74
         self.hook_position = 0, 0
 
 
 class ScorePlayerTwo(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 167, 26, 26
 
 
 class PlayerTwoHook(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 0, 0, 0
         self.hook_position = 0, 0
 
 
 class ScorePlayerOne(GameObject):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self.rgb = 167, 26, 26
 
 
