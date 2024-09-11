@@ -41,4 +41,4 @@ setup(
 )
 
 print("Please install gymnasium atari dependencies, using:\n", 
-      "pip install gymnasium[atari, accept-rom-license]")
+      "pip install gymnasium[atari,accept-rom-license]")
