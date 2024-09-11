@@ -527,10 +527,13 @@ class OCAtari(gym.Env):
         plt.subplots_adjust(top=0.8)
         plt.show()
 
-
-    def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
+    def aggregated_render(self, coefs=(0.05, 0.1, 0.25, 0.6)):
         rendered = _zeros_like(self._state_buffer[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer):
             rendered += coef * state_i
         rendered = rendered.cpu().detach().to(int).numpy()
         return rendered
+
+    @property
+    def unwrapped(self):
+        return self._env.unwrapped
