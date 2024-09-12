@@ -98,7 +98,8 @@ class OCAtari(gym.Env):
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
     def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
-                 render_mode=None, render_oc_overlay=False, gym_args=None, *args, **kwargs):
+                 render_mode=None, render_oc_overlay=False, gym_args=None,
+                 logger=gym.logger, *args, **kwargs):
         if gym_args is None:
             gym_args = {}
         if "ALE/" in env_name: #case if v5 specified
@@ -156,7 +157,7 @@ class OCAtari(gym.Env):
             self._fill_buffer = self._fill_buffer_ori
             self._reset_buffer = self._reset_buffer_ori
         elif obs_mode == "obj":
-            print("Using OBJ State Representation")
+            logger.info("Using OBJ State Representation")
             if mode == "ram":
                 self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name, self.hud), FEATURE_SIZE))
                 self._fill_buffer = self._fill_buffer_obj
