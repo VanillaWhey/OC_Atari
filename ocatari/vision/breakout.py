@@ -34,7 +34,7 @@ class PlayerScore(GameObject):
         self.rgb = 142, 142, 142
 
 
-class Live(GameObject):
+class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.rgb = 142, 142, 142
@@ -79,7 +79,7 @@ def _detect_objects(objects, obs, hud=False):
         live = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
         for l1 in live:
             if l1[2] < 160 and 136 > l1[0] > 97:
-                objects.append(Live(*l1))
+                objects.append(Life(*l1))
 
         num = find_objects(obs, objects_colors["lives"], min_distance=1, closing_dist=1)
         for nu in num:

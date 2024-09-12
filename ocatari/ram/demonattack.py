@@ -16,7 +16,7 @@ MAX_NB_OBJECTS =  {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Score': 1,
-    'Live': 4
+    'Life': 4
 }
 
 class Player(GameObject):
@@ -84,13 +84,13 @@ class Score(GameObject):
         self.hud = True
 
 
-class Live(GameObject):
+class Life(GameObject):
     """
     The indicator for remaining additional bunkers (lives) (HUD).
     """
     
     def __init__(self):
-        super(Live, self).__init__()
+        super(Life, self).__init__()
         self._xy = 0, 0
         self.wh = 3, 5
         self.rgb = 240, 128, 128
@@ -165,7 +165,7 @@ def _init_objects_ram(hud=False):
         objects.append(Score())
         base_x = 17
         for i in range(3):
-            live = Live()
+            live = Life()
             live.xy = base_x, 188
             objects.append(live)
             base_x += 8
@@ -207,7 +207,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     if hud:
         base_x = 17
         for i in range(ram_state[114]):
-            live = Live()
+            live = Life()
             live.xy = base_x, 188
             objects.append(live)
             base_x += 8

@@ -45,7 +45,7 @@ class Score(GameObject):
         self.rgb = 223, 183, 85
 
 
-class Live(GameObject):
+class Life(GameObject):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.rgb = 240, 128, 128
@@ -78,7 +78,7 @@ def _detect_objects(objects, obs, hud=False):
 
         live = find_objects(obs, objects_colors["live"], min_distance=1)
         for l1 in live:
-            objects.append(Live(*l1))
+            objects.append(Life(*l1))
 
     proj_friendly = find_objects(obs, objects_colors['projectile_friendly'], min_distance=1)
     for proj in proj_friendly:

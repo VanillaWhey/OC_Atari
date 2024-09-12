@@ -15,7 +15,7 @@ MAX_NB_OBJECTS = {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 3,
-    'Live': 1,
+    'Life': 1,
     'PlayerNumber': 1
 }
 
@@ -61,7 +61,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Live(GameObject):
+class Life(GameObject):
     """
     The indicator for the remaining balls (lives) (HUD).
     """
@@ -114,7 +114,7 @@ def _init_objects_ram(hud=False):
     objects = [Player()]
 
     if hud:
-        objects.extend([PlayerScore(), PlayerScore(), PlayerScore(), Live(), PlayerNumber()])
+        objects.extend([PlayerScore(), PlayerScore(), PlayerScore(), Life(), PlayerNumber()])
 
     y = 87
     objects.append(Ball())
