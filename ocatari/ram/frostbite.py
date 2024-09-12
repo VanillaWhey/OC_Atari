@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
 """
@@ -19,10 +19,10 @@ MAX_NB_OBJECTS = {
     'FrostBite': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'LifeCount':1,
+    'Lives':1,
     'PlayerScore':4,
     'Degree': 2
-}# 'Score': 1}
+}
 
 class Player(GameObject):
     """
@@ -128,7 +128,7 @@ class Clam(GameObject):
         self.rgb = 210,210,64
         self.hud = False
         self._xy = 0, 0
-        self.wh=(8, 7)
+        self.wh = (8, 7)
 
 class House(GameObject):
     """
@@ -155,7 +155,7 @@ class CompletedHouse(GameObject):
         self._xy = 0, 0
 
 
-class LifeCount(GameObject):
+class Lives(ValueObject):
     """
     The indicator for the player's lives.
     """
@@ -167,14 +167,6 @@ class LifeCount(GameObject):
         self.wh = (8, 18)
         self._xy = 0, 0
 
-
-# class Score(GameObject):
-#     def __init__(self):
-#         super().__init__()
-#         self.rgb =132,144,252
-#         self.hud = True
-#         self.wh = (8, 18)
-#         self._xy = 0, 0
 
 class Degree(GameObject):
     """
@@ -189,7 +181,7 @@ class Degree(GameObject):
         self._xy = 0, 0
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display.
     """
@@ -200,8 +192,6 @@ class PlayerScore(GameObject):
         self.hud = True
         self.wh = (8, 18)
         self._xy = 0, 0
-
-
 
 
 def _init_objects_ram(hud=False):
@@ -215,7 +205,7 @@ def _init_objects_ram(hud=False):
     objects.extend([None]*12) #for bird clams and crabs
     objects.extend([House(),CompletedHouse(),None]) # None was frostbite before
     if hud:
-        objects.extend([LifeCount(),Degree(),Degree(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
+        objects.extend([Lives(),Degree(),Degree(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
     return objects
 
 def _detect_objects_ram(objects, ram_state, hud=False):
@@ -335,11 +325,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[43]=None
 
     if hud:
-        # LifeCount
+        # Lives
         if ram_state[76]!=0:
-            l=LifeCount()
+            l=Lives()
+            l.value = ram_state[76]
             l.xy=63,22
-            l.wh=(6,10)
+            l.wh=(6,8)
             objects[45]=l
         else:
             objects[45]=None

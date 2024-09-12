@@ -4,7 +4,7 @@ import sys
 import numpy as np
 
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game Pitfall.
@@ -29,7 +29,7 @@ MAX_NB_OBJECTS = {
     'Platform': 4
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'LifeCount': 3,
+    'Life': 3,
     'PlayerScore': 6,
     'Timer': 5
 }
@@ -270,7 +270,7 @@ class Platform(GameObject):
         self.hud = False
 
 
-class LifeCount(GameObject):
+class Life(GameObject):
     """
     The indicator for the remaining lives (HUD).
     """
@@ -284,7 +284,7 @@ class LifeCount(GameObject):
         self.value = 0
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -362,7 +362,7 @@ def _init_objects_ram(hud=False):
     objects.extend([GoldenBar()])
     objects.extend([Platform(), Platform(), Platform(), Platform(), Platform()])
     if hud:
-        objects.extend([LifeCount(), LifeCount(), LifeCount()])  # 3
+        objects.extend([Life(), Life(), Life()])  # 3
         objects.extend([PlayerScore()])
         objects.extend([Timer()])
         objects.extend([PlayerScore()])
@@ -618,14 +618,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # LifeCounts
         # number of lives remaining, stored as displayed pattern ($a0 = 2, $80 = 1, $00 = 0)
         if ram_state[0] == 160:
-            l1 = LifeCount()
+            l1 = Life()
             l1.xy = 23, 22
-            l2 = LifeCount()
+            l2 = Life()
             l2.xy = 21, 22
             objects[25] = l1
             objects[26] = l2
         elif ram_state[0] == 128:
-            l1 = LifeCount()
+            l1 = Life()
             l1.xy = 21, 22
             objects[25] = l1
             objects[26] = None
