@@ -17,8 +17,8 @@ MAX_NB_OBJECTS = {
     'Rock': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'PlayerScore': 1,
-    'Lives': 1
+    'Score': 1,
+    'Life': 2
 }
 
 
@@ -121,7 +121,7 @@ class Rock(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class Score(GameObject):
     """
     The player's score display (HUD).
     """
@@ -135,10 +135,10 @@ class PlayerScore(GameObject):
         self.hud = True
 
     def __eq__(self, o):
-        return isinstance(o, PlayerScore) and self.xy == o.xy
+        return isinstance(o, Score) and self.xy == o.xy
 
 
-class Lives(GameObject):
+class Life(GameObject):
     """
     The indicator for the remaining lives of the player (HUD). 
     """
@@ -148,8 +148,7 @@ class Lives(GameObject):
         self.visible = True
         self.xy = 37, 206
         self.rgb = 0, 0, 0
-        self.wh = 6, 6
-        self.lives = 2
+        self.wh = 2, 6
         self.hud = True
 
 
@@ -158,10 +157,9 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [] #Player(), Arrow(), Bait(), Balloon(), Enemy(), Stone(), Rock()
-    objects.extend([None] * 19)
-    # if hud:
-    #     objects.extend([PlayerScore()])
+    objects = [None] * 19 #Player(), Arrow(), Bait(), Balloon(), Enemy(), Stone(), Rock()
+    if hud:
+        objects.extend([None] * 3)
     return objects
 
 
@@ -336,7 +334,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # player score
     player_score = None
     if hud:
-        player_score = PlayerScore()
+        player_score = Score()
         a = ram_state[9] % 16 + 10 * (ram_state[9] // 16)
         b = ram_state[10] % 16 + 10 * (ram_state[10] // 16)
         player_score.score = a * 100 + b
@@ -368,12 +366,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects[17] = player_score
 
     # lives
-    lives = None
-    if hud and ram_state[22] != 0:
-        lives = Lives()
-        lives.lives = ram_state[22]
-        if lives.lives == 1:
-            lives.wh = 2, 6
-        elif lives.lives == 2:
-            lives.wh = 6, 6
-    objects[18] = lives
+    for i in range(2):
+        life = objects[18 + i]
+        if i < ram_state[22] and life is None:
+            life = Life()
+            life.x += 4 * i
+            objects[18 + i] = life
+        elif i >= ram_state[22] and life:
+            objects[18 + i] = None

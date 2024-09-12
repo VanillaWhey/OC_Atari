@@ -19,7 +19,7 @@ MAX_NB_OBJECTS =  {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Score': 1,
-    'Lives': 1
+    'Life': 3
 }
 
 
@@ -153,15 +153,15 @@ class Score(GameObject):
         self.hud = True
 
 
-class Lives(GameObject):
+class Life(GameObject):
     """
     The indicator for the remaining lives.
     """
     
     def __init__(self):
-        super(Lives, self).__init__()
+        super(Life, self).__init__()
         self._xy = 33, 16
-        self.wh = 24, 12
+        self.wh = 8, 12
         self.rgb = 210, 210, 64
         self.hud = True
 
@@ -200,9 +200,9 @@ def _init_objects_ram(hud=True):
     global last_103
     last_103 = 0
 
-    objects.extend([None] * 4) # Coily, pruple_ball, green_ball, sam
+    objects.extend([None] * 4)  # Coily, pruple_ball, green_ball, sam
     if hud:
-        objects.extend([None] *2)
+        objects.extend([None] * 4)  # 1 Score, 2 Lives
     return objects
 
 
@@ -394,22 +394,19 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             last_i = -1
         
     if hud:
-        score, lives = objects[28], objects[29]
-        score = Score()
-        objects[28] = score
-        if ram_state[8] == 2:
-            lives = Lives()
-        elif ram_state[8] == 1:
-            lives = Lives()
-            lives.wh = 16, 12
-        elif ram_state[8] == 0:
-            lives = Lives()
-            lives.wh = 8, 12
-        else:
-            lives = None
-        objects[29] = lives
+        # score
+        objects[28] = Score()
 
-
+        # lives
+        for i in range(3):
+            num_lives = (ram_state[8] + 1) % 256
+            life = objects[29 + i]
+            if i < num_lives and life is None:
+                life = Life()
+                life.x += 8 * i
+                objects[29 + i] = life
+            elif i >= num_lives and life:
+                objects[29 + i] = None
 
     return objects
 

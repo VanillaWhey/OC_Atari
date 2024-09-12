@@ -15,8 +15,8 @@ MAX_NB_OBJECTS =  {
     'Satellite': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 4,
-    'Lives': 2
+    'Score': 2,
+    'Lives': 1
 }
 
 

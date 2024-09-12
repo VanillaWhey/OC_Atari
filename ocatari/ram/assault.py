@@ -16,7 +16,7 @@ MAX_NB_OBJECTS = {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 6,
-    'Lives': 3,
+    'Life': 3,
     'Health': 3
 }
 
@@ -124,7 +124,7 @@ class PlayerScore(ValueObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Lives(GameObject):
+class Life(GameObject):
     """
     The indicator for the remaining lives of the player (HUD). 
     """
@@ -159,7 +159,7 @@ def _init_objects_ram(hud=False):
     objects = [] #Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
     objects.extend([None] * 8)
     if hud:
-        objects.extend([None] * 15) #[PlayerScore(), Health(), Lives()]
+        objects.extend([None] * 15) #[PlayerScore(), Health(), Life()]
     return objects
 
 
@@ -444,9 +444,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
         # lives
         for i in range(ram_state[101] - 1):
-            liv = Lives()
-            liv.xy = 15 + 16 * i, 192
-            objects[14+i] = liv
+            life = Life()
+            life.xy = 15 + 16 * i, 192
+            objects[14+i] = life
 
         # health
         health = Health()

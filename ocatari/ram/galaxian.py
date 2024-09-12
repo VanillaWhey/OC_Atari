@@ -17,7 +17,7 @@ MAX_NB_OBJECTS =  {
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Score': 1,
     'Round': 1,
-    'Lives': 1
+    'Life': 3
 }
 
 class Player(GameObject):
@@ -94,7 +94,7 @@ class Round(GameObject):
         self.wh = 7, 7
         self.hud = True
 
-class Lives(GameObject):
+class Life(GameObject):
     """
     The remaining lives of the player (HUD).
     """
@@ -103,7 +103,7 @@ class Lives(GameObject):
         super().__init__()
         self.rgb = 214, 214, 214
         self._xy = 19, 188
-        self.wh = 13, 7
+        self.wh = 3, 7
         self.hud = True
 
 
@@ -118,7 +118,7 @@ def _init_objects_ram(hud=False):
     #     objects.append(missile)
 
     if hud:
-        objects.extend([Lives(), Score(), Round()])
+        objects.extend([None, None, None, Score(), Round()])
 
     return objects
 
@@ -148,12 +148,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[1] = None
 
     if hud:
-        lives = objects[2]
-        if ram_state[57] != 0:
-            lives.w = ram_state[57] * 3 + (ram_state[57] - 1) * 2
-            objects[2] = lives
-        elif lives is not None:
-            objects[2] = None
+        # lives
+        for i in range(3):
+            life = objects[2 + i]
+            if i < ram_state[57] and life is None:
+                life = Life()
+                life.x += 5 * i
+                objects[2 + i] = life
+            elif i >= ram_state[57] and life:
+                objects[2 + i] = None
         
 
     # ENEMIES

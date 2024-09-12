@@ -17,7 +17,6 @@ MAX_NB_OBJECTS = {
     'SurfaceSubmarine': 1,
     'PlayerMissile': 1,
     'EnemyMissile': 4,
-    'Lives': 1,
     'OxygenBar': 1,
     'CollectedDiver': 6,
 }
@@ -26,6 +25,7 @@ MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1,
     'OxygenBarDepleted': 1,
     'OxygenBarLogo': 1,
+    'Life': 6
 }
 
 
@@ -132,7 +132,7 @@ class PlayerScore(ValueObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class Lives(ValueObject):
+class Life(GameObject):
     """
     The indidcator for remaining reserve subs (lives) (HUD).
     """
@@ -141,9 +141,8 @@ class Lives(ValueObject):
         super().__init__()
         self._xy = 58, 22
         self.rgb = 210, 210, 64
-        self.wh = 23, 8
+        self.wh = 7, 8
         self.hud = True
-        self.value = 3
 
 
 class OxygenBar(ValueObject):
@@ -232,7 +231,8 @@ def _init_objects_ram(hud=False):
     objects.extend([CollectedDiver()]*6)
 
     if hud:
-        objects.extend([PlayerScore(), Lives(), OxygenBarDepleted(), OxygenBarLogo()])
+        objects.extend([PlayerScore(), OxygenBarDepleted(), OxygenBarLogo(),
+                        None, None, None, None, None, None])
 
     return objects
 
@@ -251,17 +251,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # one single RAM value determines the current formation. Moreover, each
     # batch consists purely of sharks or of submarines, determined by another value."""
 
-    for i in range(4):  # for each of the 4 lanes (from bottom to top lane)
-        present_enemy_type = Submarine if _is_submarine(i, ram_state) else Shark
-        hidden_enemy_type = Shark if _is_submarine(i, ram_state) else Submarine
-        batch_formation = ram_state[36 + i]
+    for l in range(4):  # for each of the 4 lanes (from bottom to top lane)
+        present_enemy_type = Submarine if _is_submarine(l, ram_state) else Shark
+        hidden_enemy_type = Shark if _is_submarine(l, ram_state) else Submarine
+        batch_formation = ram_state[36 + l]
 
         for j in range(3):  # for each of the three slots (left to right)
             enemy_in_slot = (batch_formation // 2 ** (2 - j)) % 2
-            idx = i * 3 + j + 1
+            idx = l * 3 + j + 1
             if enemy_in_slot:
-                x = (ram_state[30 + i] + 16 * j) % 256
-                y = 141 - i * 24
+                x = (ram_state[30 + l] + 16 * j) % 256
+                y = 141 - l * 24
                 enemy = objects[idx]
                 if -5 <= x <= 165:  # Only track objects that are on the screen
                     # Sharks float up and down, determined by an offset
@@ -280,22 +280,22 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             # _remove_object(hidden_enemy_type, idx)  # always remove the invisible enemy
 
     # divers and enemy_missiles share a ram position
-    for i in range(4):
-        if 0 < ram_state[71 + i] < 160:
-            if _is_submarine(i, ram_state):  # then, it's an enemy missile
-                missile = objects[13+i]
+    for l in range(4):
+        if 0 < ram_state[71 + l] < 160:
+            if _is_submarine(l, ram_state):  # then, it's an enemy missile
+                missile = objects[13 + l]
                 if type(missile) != EnemyMissile:
                     missile = EnemyMissile()
-                missile.xy = ram_state[71 + i] + 3, 145 - i * 24
-                objects[13+i] = missile
+                missile.xy = ram_state[71 + l] + 3, 145 - l * 24
+                objects[13 + l] = missile
             else:
-                diver = objects[13+i]
+                diver = objects[13 + l]
                 if type(diver) != Diver:
                     diver = Diver()
-                diver.xy = ram_state[71 + i], 141 - i * 24
-                objects[13+i] = diver
+                diver.xy = ram_state[71 + l], 141 - l * 24
+                objects[13 + l] = diver
         else:
-            objects[13+i] = None
+            objects[13 + l] = None
 
 
     # only spawns in late game
@@ -329,13 +329,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     # If you have six collected divers they blink. Blinking is ignored here
-    for i in range(6):
-        if i < ram_state[62]:
-            if type(objects[20+i]) != CollectedDiver:
-                objects[20+i] = CollectedDiver()
-                objects[20+i].xy = 58 + i * 8, 178
+    for l in range(6):
+        if l < ram_state[62]:
+            if type(objects[20 + l]) != CollectedDiver:
+                objects[20 + l] = CollectedDiver()
+                objects[20 + l].xy = 58 + l * 8, 178
         else:
-            objects[20+i] = None
+            objects[20 + l] = None
 
     if hud:
         score_value = _convert_number(ram_state[56]) * 10000 + \
@@ -371,25 +371,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         score.xy = x, 9
         score.wh = w, 8
 
-        #lives
-        num_lives = ram_state[59]
-        if num_lives > 0:  # Up to 6 lives possible
-            new_wh = 7 + 8 * (num_lives - 1), 8
-            if type(objects[27]) != Lives:
-                objects[27] = Lives() 
-            objects[27].wh = new_wh
-            objects[27].value = num_lives
+        if ram_state[102] != 64:
+            if type(objects[27]) != OxygenBarDepleted:
+                objects[27] = OxygenBarDepleted()
+            objects[27].xy = 49 + ram_state[102], 170
+            objects[27].wh = 63 - ram_state[102], 5
+            objects[27].value = 63 - ram_state[102]
         else:
             objects[27] = None
-
-        if ram_state[102] != 64:
-            if type(objects[28]) != OxygenBarDepleted:
-                objects[28] = OxygenBarDepleted()
-            objects[28].xy = 49 + ram_state[102], 170
-            objects[28].wh = 63 - ram_state[102], 5
-            objects[28].value = 63 - ram_state[102]
-        else:
-            objects[28] = None
+            
+        #lives
+        num_lives = ram_state[59]
+        for l in range(6):
+            life = objects[29 + l]
+            if l < num_lives and life is None:
+                life = Life()
+                life.x += 8 * l
+                objects[29 + l] = life
+            elif l >= num_lives and life:
+                objects[29 + l] = None
 
 
 def _is_submarine(i: int, ram_state) -> bool:

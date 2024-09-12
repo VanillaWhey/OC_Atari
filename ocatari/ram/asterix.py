@@ -12,7 +12,7 @@ MAX_NB_OBJECTS = {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Score' : 1,
-    'Lives': 2
+    'Life': 2
 }
 
 
@@ -43,7 +43,7 @@ class Score(ValueObject):
         self.value = 0
 
 
-class Lives(GameObject):
+class Life(GameObject):
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -89,9 +89,9 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
     if hud:
-        objects.extend([Score(), Lives(), Lives()])
+        objects.extend([Score(), Life(), Life(), Life()])
 
-    objects += [None for i in range(8)]
+    objects += [None for _ in range(8)]
     return objects
 
 
@@ -171,20 +171,20 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             score.xy = 96 - digits * 8, 184
             score.wh = 6 + digits * 8, 7
         if lives_nr >= 2:
-            lives = objects[2]
-            if lives is None:
-                lives = Lives()
-                objects[2] = lives
-            lives.xy = 60, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[2], Lives):
+            life = objects[2]
+            if life is None:
+                life = Life()
+                objects[2] = life
+            life.xy = 60, 169
+            life.wh = 8, 11
+        elif isinstance(objects[2], Life):
             del objects[2]
         if lives_nr >= 3:
-            lives = objects[3]
-            if lives is None:
-                lives = Lives()
-                objects[3] = lives
-            lives.xy = 60 + 16, 169
-            lives.wh = 8, 11
-        elif isinstance(objects[3], Lives):
+            life = objects[3]
+            if life is None:
+                life = Life()
+                objects[3] = life
+            life.xy = 60 + 16, 169
+            life.wh = 8, 11
+        elif isinstance(objects[3], Life):
             del objects[3]
