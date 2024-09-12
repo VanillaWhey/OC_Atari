@@ -1,5 +1,5 @@
-from .game_objects import GameObject
-from ._helper_methods import bitfield_to_number, number_to_bitfield
+from .game_objects import GameObject, ValueObject
+from ._helper_methods import bitfield_to_number, number_to_bitfield, _convert_number
 import math
 import sys
 
@@ -140,7 +140,7 @@ class Scorpion(CCGameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class Score(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -244,17 +244,22 @@ def _create_score_objects(score):
     FE score=10 would return a list of 2 score objects
     """
     ret = []
-    amount = 0
-    if score > 0:
-        amount = int(math.log10(score)) + 1
-    if amount < 2:
-        amount = 2
     basex = 140
-    pad = 8
-    for i in range(amount):
-        s = Score()
-        s.xy = basex - i * pad, 187
-        ret.append(s)
+    pad = 16
+    for i, sc in enumerate(score):
+        value = _convert_number(sc)
+        tenner = value // 10
+        if value > 0 or i == 0:
+            s = Score()
+            s.value = value % 10
+            s.xy = basex - i * pad, 187
+            ret.append(s)
+        if tenner > 0 or i == 0:
+            s = Score()
+            s.value = tenner
+            s.xy = basex - i * pad - pad / 2, 187
+            ret.append(s)
+
     return ret
 
 
@@ -281,7 +286,7 @@ def _init_objects_ram(hud=False):
         objects.append(CentipedeSegment())
     if hud:
         # objects.append(Score())
-        objects.extend(_create_score_objects(0))
+        objects.extend(_create_score_objects([0]))
         objects.extend(_create_life_objects(2))
         objects.append(Ground())
     return objects
@@ -343,8 +348,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             obj._update_color(lvl)
     if hud:
         ground._update_color(lvl)
-        score = ram_state[118] + ram_state[117] * 100 + ram_state[116] * 10000
-        objects.extend(_create_score_objects(score))
+        objects.extend(_create_score_objects(ram_state[118:115:-1]))
         # life = level_and_life_bitfield[1] * 4 + level_and_life_bitfield[2] * 2 + level_and_life_bitfield[3]
         life = int(ram_state[109]).bit_length() - 4
         objects.extend(_create_life_objects(life))
