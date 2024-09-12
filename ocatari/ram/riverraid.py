@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys
 """
 RAM extraction for the game RIVER RAID. Supported modes: raw
@@ -146,7 +146,7 @@ class FuelDepot(_DescendingObject):
         self.xy = self.xy[0], self.xy[1] - self.wh[1]
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
