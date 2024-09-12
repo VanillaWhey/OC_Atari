@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -16,7 +16,7 @@ MAX_NB_OBJECTS = {
     'Pill': 255
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 3,
+    'PlayerScore': 3,
     'Life': 3
 }
 MAX_NB_OBJECTS_HUD['Fruit'] = MAX_NB_OBJECTS_HUD['Fruit'] + 1  # HUD Fruit/Bear
@@ -89,13 +89,13 @@ class Pill(GameObject):
         self.grid_ij = 0, 0
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 95, 187
         self.wh = 7, 7
         self.rgb = 195, 144, 61
@@ -276,7 +276,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
         score = _convert_number(ram_state[122]) * 10000 + _convert_number(ram_state[121]) * 100 +\
                 _convert_number(ram_state[120])
-        sc = Score()
+        sc = PlayerScore()
         if ram_state[122] > 15:
             sc.xy =  55, 187
             sc.wh = 47, 7

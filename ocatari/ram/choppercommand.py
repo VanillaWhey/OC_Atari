@@ -21,7 +21,7 @@ MAX_NB_OBJECTS =  {
     'Bomb': 3
 }
 MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
-    'Score': 4,
+    'PlayerScore': 4,
     'Life': 2
 }
 
@@ -158,13 +158,13 @@ class Shot(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 75, 16
         self.wh = 6, 7
         self.rgb = 223, 183, 85
@@ -267,7 +267,7 @@ def _detect_objects_raw(info, ram_state):
     relevant_objects.extend(info["Player"])
     info["Shot"] = get_ram_states((45, 49, 52, 55, 58, 61, 64), ram_state)
     relevant_objects.extend(info["Player"])
-    # info["Score"] = get_ram_states((33, 108, 110, 112), ram_state)
+    # info["PlayerScore"] = get_ram_states((33, 108, 110, 112), ram_state)
     # info["Life"] = get_ram_states((97, 100), ram_state)
 
     info["relevant_objects"] = relevant_objects
@@ -950,31 +950,31 @@ def _detect_objects_ram(objects, ram_state, hud):
         # score
         if ram_state[108] > 15:
             for i in range(6):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 75 - (i * 8), 16
                 objects[42+i] = score
         elif ram_state[108] > 0:
             for i in range(5):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 75 - (i * 8), 16
                 objects[42+i] = score
         elif ram_state[110] > 15:
             for i in range(4):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 75 - (i * 8), 16
                 objects[42+i] = score
         elif ram_state[110] > 0:
             for i in range(3):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 75 - (i * 8), 16
                 objects[42+i] = score
         elif ram_state[112] > 15:
             for i in range(2):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 75 - (i * 8), 16
                 objects[42+i] = score
         else:
-            score = Score()
+            score = PlayerScore()
             objects[42] = score
         try:
             score.value = _convert_number(ram_state[108]) * 10000 + _convert_number(ram_state[110]) * 100 + _convert_number(ram_state[112])

@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import numpy as np
 from termcolor import colored
 import sys
@@ -15,7 +15,7 @@ MAX_NB_OBJECTS =  {
     'Satellite': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 2,
+    'PlayerScore': 2,
     'Lives': 1
 }
 
@@ -97,7 +97,7 @@ class Bullet(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -199,7 +199,7 @@ def _init_objects_ram(hud=False):
     objects = [Player(1)]
 
     if hud:
-        objects.extend([Score(1, 4), Score(2, 84), Lives()])
+        objects.extend([PlayerScore(1, 4), PlayerScore(2, 84), Lives()])
 
     for i in range(3):
         shield = Shield()
@@ -254,7 +254,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         lives_ctr = 41
         bullets = [Bullet() for _ in range(3)]
         shields = [obj for obj in objects if isinstance(obj, Shield)]
-        if not hud and isinstance(objects[1], Score):
+        if not hud and isinstance(objects[1], PlayerScore):
             del objects[1:4]
         else:
             scores = objects[1:3]

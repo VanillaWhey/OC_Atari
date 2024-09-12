@@ -14,7 +14,7 @@ MAX_NB_OBJECTS = {
     'Enemy_Projectile': 3
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 5
 }
 
@@ -123,12 +123,12 @@ class Boss_Block_Red(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     Players points in the game
     """
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 95, 5
         self.wh = (7, 7)
         self.rgb = 180, 231, 117
@@ -157,7 +157,7 @@ def _init_objects_ram(hud=False):
     objects.extend([None] * 168)
 
     if hud:
-        objects.extend([Score()])
+        objects.extend([PlayerScore()])
         objects.extend([None] * 5)
     return objects
 

@@ -13,7 +13,7 @@ MAX_NB_OBJECTS = {
     'Tentacle': 360
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Timer': 1,
     'Oxygen_Meter': 1
 }
@@ -115,12 +115,12 @@ class Tentacle(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
-    Score of the game. Increases by hitting the shark or the tentacles  
+    PlayerScore of the game. Increases by hitting the shark or the tentacles  
     """
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 0, 0
         self.wh = (0, 0)
         self.rgb = 236, 236, 236
@@ -160,7 +160,7 @@ def _init_objects_ram(hud=False):
     objects.extend([None] * 361)
 
     if hud:
-        objects.extend([Score(), Timer(), Oxygen_Meter()])
+        objects.extend([PlayerScore(), Timer(), Oxygen_Meter()])
         # objects.extend([None] * 13)
     return objects
 

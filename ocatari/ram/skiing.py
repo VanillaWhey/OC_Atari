@@ -1,6 +1,6 @@
 import sys
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import numpy as np
 """
 RAM extraction for the game Skiing.
@@ -14,7 +14,7 @@ MAX_NB_OBJECTS =  {
     'Flag': 4
 }
 MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
-    'Score': 2,
+    'PlayerScore': 2,
     'Clock': 8
 }
 
@@ -176,7 +176,7 @@ class Clock(GameObject):
         self.hud = True
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The counter display. This can either be the remaining number of gates (slalom mode) 
     or remaining meters (downhill racing) (HUD).
@@ -203,7 +203,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
     if hud:
-        objects.extend([Score(), Score(ten=True),
+        objects.extend([PlayerScore(), PlayerScore(ten=True),
                         Clock(59, 16, 6, 7), Clock(66, 17, 1, 2),
                         Clock(66, 20, 1, 2),
                         Clock(68, 16, 6, 7), Clock(75, 16, 6, 7),

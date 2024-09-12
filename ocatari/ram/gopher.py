@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys
 
 MAX_NB_OBJECTS = {
@@ -9,7 +9,7 @@ MAX_NB_OBJECTS = {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Bird': 1,
-    'Score': 5
+    'PlayerScore': 5
 }
 
 full_list=[(140,175),(12,175),(27,175),(45,175),(108,175),(124,175),
@@ -72,7 +72,7 @@ class Empty_block(GameObject):
         self.rgb = 223,183,85 
         self.hud = False
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0
@@ -88,7 +88,7 @@ def _init_objects_ram(hud=False):
     objects = [Player(),Gopher(),Carrot(),Carrot(),Carrot()]
     objects.extend([Empty_block()]*38) # Maximum number of expeced blocks
     if hud:
-        objects.extend([Bird(),Score(),Score(),Score(),Score()])
+        objects.extend([Bird(),PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()])
     return objects
 
 
@@ -213,9 +213,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     if hud:
-        # Score hundreds and thousands depend on ram_state[49] and score ones and tens depend on ram_state[50]
-        bound1,bound2,bound3,bound4=Score(),Score(),Score(),Score()
-        # Score at (98, 10), (5, 9), Score at (90, 10), (5, 9), Score at (82, 10), (5, 9), Score at (75, 10), (3, 9)]
+        # PlayerScore hundreds and thousands depend on ram_state[49] and score ones and tens depend on ram_state[50]
+        bound1,bound2,bound3,bound4=PlayerScore(),PlayerScore(),PlayerScore(),PlayerScore()
+        # PlayerScore at (98, 10), (5, 9), PlayerScore at (90, 10), (5, 9), PlayerScore at (82, 10), (5, 9), PlayerScore at (75, 10), (3, 9)]
         bound1.xy=75,10
         bound2.xy=82,10
         bound3.xy=90,10

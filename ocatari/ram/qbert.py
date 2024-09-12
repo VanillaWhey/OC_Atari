@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import numpy as np
 import sys
 from .utils import _color_conversion
@@ -18,7 +18,7 @@ MAX_NB_OBJECTS =  {
     'Sam': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 3
 }
 
@@ -140,13 +140,13 @@ class Sam(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player score display.
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 34, 6
         self.wh = 37, 7
         self.rgb = 210, 210, 64
@@ -202,7 +202,7 @@ def _init_objects_ram(hud=True):
 
     objects.extend([None] * 4)  # Coily, pruple_ball, green_ball, sam
     if hud:
-        objects.extend([None] * 4)  # 1 Score, 2 Lives
+        objects.extend([None] * 4)  # 1 PlayerScore, 2 Lives
     return objects
 
 
@@ -395,7 +395,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         
     if hud:
         # score
-        objects[28] = Score()
+        objects[28] = PlayerScore()
 
         # lives
         for i in range(3):

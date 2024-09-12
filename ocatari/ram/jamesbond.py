@@ -12,7 +12,7 @@ MAX_NB_OBJECTS = {
     'Ice': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 3
 }
 
@@ -89,9 +89,9 @@ class Diver(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 0, 0
         self.wh = (7, 7)
         self.rgb = 252, 252, 84
@@ -200,8 +200,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     if hud:
-        # Score
-        score = Score()
+        # PlayerScore
+        score = PlayerScore()
         objects[6] = score
         if ram_state[94] > 15:
             score.xy = 55, 15

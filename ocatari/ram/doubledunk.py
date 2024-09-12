@@ -12,8 +12,8 @@ MAX_NB_OBJECTS = {
     'Backboard': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Player_Score': 1,
-    'Opponent_Score': 1
+    'PlayerScore': 1,
+    'EnemyScore': 1
 }
 
 
@@ -95,24 +95,24 @@ class Backboard(GameObject):
         self.hud = False
 
 
-class Player_Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     Players points in the game
     """
     def __init__(self):
-        super(Player_Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 46, 9
         self.wh = (5, 7)
         self.rgb = 45, 129, 105
         self.hud = True
         self.value = 0
 
-class Opponent_Score(GameObject):
+class EnemyScore(ValueObject):
     """
     Enemy points in the game
     """
     def __init__(self):
-        super(Opponent_Score, self).__init__()
+        super(EnemyScore, self).__init__()
         self._xy = 110, 9
         self.wh = (5, 7)
         self.rgb = 236, 236, 236
@@ -128,7 +128,7 @@ def _init_objects_ram(hud=False):
 
     # objects.extend()
     if hud:
-        objects.extend([Player_Score(), Opponent_Score()])
+        objects.extend([PlayerScore(), EnemyScore()])
         # objects.extend([None] * 13)
     return objects
 

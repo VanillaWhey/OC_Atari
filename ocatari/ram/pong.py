@@ -1,6 +1,6 @@
 import sys
 
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 import numpy as np
 
@@ -61,7 +61,7 @@ class Ball(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -82,7 +82,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class EnemyScore(GameObject):
+class EnemyScore(ValueObject):
     """
     The enemy's score display (HUD).
     """

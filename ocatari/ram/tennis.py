@@ -1,6 +1,7 @@
 
 import sys
-from .game_objects import GameObject
+
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game TENNIS. Supported modes: ram.
@@ -75,7 +76,7 @@ class BallShadow(GameObject):
         self.visible = True
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -92,7 +93,7 @@ class PlayerScore(GameObject):
         return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
-class EnemyScore(GameObject):
+class EnemyScore(ValueObject):
     """
     The enemy's score display (HUD).
     """
@@ -156,6 +157,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         enemy_score = EnemyScore()
         enemy_score_val = min(15 * ram_state[70], 40)
         player_score_val = min(15 * ram_state[69], 40)
+        player_score.value = player_score_val
+        enemy_score.value = enemy_score_val
+
         add_plr = True
         add_emy = True
 

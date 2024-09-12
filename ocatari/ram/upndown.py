@@ -9,7 +9,7 @@ MAX_NB_OBJECTS = {
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'HUD_Flag': 8,
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 4
 }
 
@@ -63,9 +63,9 @@ class HUD_Flag(ValueObject):
         self.hud = True
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 57, 6
         self.wh = (5, 7)
         self.rgb = 168, 48, 143
@@ -232,8 +232,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[-6] = None
 
-        # Score
-        score = Score()
+        # PlayerScore
+        score = PlayerScore()
         objects[-5] = score
         x, w= 57, 5
         if ram_state[0] > 16:

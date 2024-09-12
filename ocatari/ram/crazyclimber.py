@@ -12,7 +12,7 @@ MAX_NB_OBJECTS = {
     'Helicopter': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 3
 }
 
@@ -102,9 +102,9 @@ class Helicopter(GameObject):
         self.orientation = 1
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 49, 21
         self.wh = (47, 17) #37,95
         self.rgb = 111, 210, 111
@@ -129,7 +129,7 @@ def _init_objects_ram(hud=False):
     objects.extend([None] * 150)
     if hud:
         objects.extend([None] * 4)
-        objects[76] = Score()
+        objects[76] = PlayerScore()
     return objects
 
 

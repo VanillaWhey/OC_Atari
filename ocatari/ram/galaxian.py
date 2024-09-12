@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys
 import numpy as np
@@ -7,7 +7,7 @@ import numpy as np
 RAM extraction for the game GALAXIAN. Supported modes: ram.
 """
 
-# TODO: Diving Enemies, Enemy Missiles, Enemy x pos, width of Score and Round
+# TODO: Diving Enemies, Enemy Missiles, Enemy x pos, width of PlayerScore and Round
 MAX_NB_OBJECTS =  {
     'Player': 1,
     'PlayerMissile': 1,
@@ -15,7 +15,7 @@ MAX_NB_OBJECTS =  {
     'EnemyShip': 35
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Round': 1,
     'Life': 3
 }
@@ -70,7 +70,7 @@ class EnemyShip(GameObject):
         self.rgb = 232, 204, 99
         self.hud = False
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's remaining lives (HUD).
     """
@@ -118,7 +118,7 @@ def _init_objects_ram(hud=False):
     #     objects.append(missile)
 
     if hud:
-        objects.extend([None, None, None, Score(), Round()])
+        objects.extend([None, None, None, PlayerScore(), Round()])
 
     return objects
 

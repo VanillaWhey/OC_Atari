@@ -14,7 +14,7 @@ MAX_NB_OBJECTS = {
     'Shield_Block': 162
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 1
 }
 
@@ -103,9 +103,9 @@ class Shield_Block(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 0, 0
         self.wh = (7, 7)
         self.rgb = 78, 50, 181
@@ -190,32 +190,32 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if hud:
             # scores ram: 96-98 lives 99
             if ram_state[96] > 15:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 55, 47
                 score.wh = 47, 7
             elif ram_state[96]:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 63, 48
                 score.wh = 39, 7
             elif ram_state[97] > 15:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 71, 48
                 score.wh = 31, 7
             elif ram_state[97]:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 79, 48
                 score.wh = 23, 7
             elif ram_state[98] > 15:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 87, 48
                 score.wh = 15, 7
             elif ram_state[98]:
-                score = Score()
+                score = PlayerScore()
                 objects[0] = score
                 score.xy = 95, 48
                 score.wh = 7, 7

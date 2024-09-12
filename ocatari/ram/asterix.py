@@ -11,7 +11,7 @@ MAX_NB_OBJECTS = {
     'Consumable' : 8
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score' : 1,
+    'PlayerScore' : 1,
     'Life': 2
 }
 
@@ -33,7 +33,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
         super().__init__()
         self.rgb = 187, 187, 53
@@ -89,7 +89,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player()]
     if hud:
-        objects.extend([Score(), Life(), Life(), Life()])
+        objects.extend([PlayerScore(), Life(), Life(), Life()])
 
     objects += [None for _ in range(8)]
     return objects

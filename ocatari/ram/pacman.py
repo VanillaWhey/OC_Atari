@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import math
 import sys
@@ -15,7 +15,7 @@ MAX_NB_OBJECTS = {
     'Vitamin': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 3,
+    'PlayerScore': 3,
     'Life': 3
 }
 
@@ -78,13 +78,13 @@ class PowerPill(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 96, 207
         self.wh = 6, 7
         self.rgb = 0, 0, 0
@@ -114,7 +114,7 @@ def _init_objects_ram(hud=False):
         objects.append(PowerPill(*ppxy))
 
     if hud:
-        objects.extend([Life(), Score()])
+        objects.extend([Life(), PlayerScore()])
     return objects
 
 get_bin = lambda x: format(int(x), 'b').zfill(8)

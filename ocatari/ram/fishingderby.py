@@ -1,18 +1,18 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game Fishing Derby.
 """
 
 MAX_NB_OBJECTS = {
-    'PlayerOneHook': 1,
-    'PlayerTwoHook': 1,
+    'PlayerHook': 1,
+    'EnemyHook': 1,
     'Fish': 6,
     'Shark': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'ScorePlayerOne': 1,
-    'ScorePlayerTwo': 1
+    'PlayerScore': 1,
+    'EnemyScore': 1
 }
 
 
@@ -46,7 +46,7 @@ class Shark(GameObject):
         self.previous_pos = 0
 
 
-class PlayerOneHook(GameObject):
+class PlayerHook(GameObject):
     """
     The hook of player one.
     """
@@ -61,7 +61,7 @@ class PlayerOneHook(GameObject):
         self.hook_position = 0, 0
 
 
-class ScorePlayerOne(GameObject):
+class PlayerScore(GameObject):
     """
     The score display of player one (HUD).
     """
@@ -74,7 +74,7 @@ class ScorePlayerOne(GameObject):
         self.value = 0
 
 
-class PlayerTwoHook(GameObject):
+class EnemyHook(GameObject):
     """
     The hook of player two.
     """
@@ -89,7 +89,7 @@ class PlayerTwoHook(GameObject):
         self.hook_position = 0, 0
 
 
-class ScorePlayerTwo(GameObject):
+class EnemyScore(GameObject):
     """
     The score display of player two (HUD).
     """
@@ -104,11 +104,11 @@ class ScorePlayerTwo(GameObject):
 
 def _init_objects_ram(hud=False):
     if hud:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerHook(), EnemyHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark(),
-                   ScorePlayerOne(), ScorePlayerTwo()]
+                   PlayerScore(), EnemyScore()]
     else:
-        objects = [PlayerOneHook(), PlayerTwoHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
+        objects = [PlayerHook(), EnemyHook(), Fish(), Fish(), Fish(), Fish(), Fish(), Fish(),
                    Shark()]
     return objects
 

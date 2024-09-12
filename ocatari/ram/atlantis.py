@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys
 
 """
@@ -19,7 +19,7 @@ MAX_NB_OBJECTS =  {
     'BanditBomber': 2
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1
+    'PlayerScore': 1
 }
 MAX_NB_OBJECTS_HUD['BanditBomber'] = 3  # todo why?
 
@@ -154,13 +154,13 @@ class Deathray(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display.
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 96, 188
         self.wh = 7, 10
         self.rgb = 252, 188, 116
@@ -402,9 +402,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     #         oj.xy = xy[0]-4, xy[1]-8
 
     if hud:
-        # Score
+        # PlayerScore
         if ram_state[33] or ram_state[34] or ram_state[35]:
-            score = Score()
+            score = PlayerScore()  # todo add score value
             if ram_state[33] >= 16:
                 score.wh = 15, 10
                 score.xy = 88, 188

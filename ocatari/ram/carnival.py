@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -114,7 +114,7 @@ class ExtraBullets(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """

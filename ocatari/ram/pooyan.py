@@ -1,5 +1,5 @@
 import sys
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import numpy as np
 
 """
@@ -17,7 +17,7 @@ MAX_NB_OBJECTS = {
     'Rock': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 2
 }
 
@@ -121,7 +121,7 @@ class Rock(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -135,7 +135,7 @@ class Score(GameObject):
         self.hud = True
 
     def __eq__(self, o):
-        return isinstance(o, Score) and self.xy == o.xy
+        return isinstance(o, PlayerScore) and self.xy == o.xy
 
 
 class Life(GameObject):
@@ -334,7 +334,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # player score
     player_score = None
     if hud:
-        player_score = Score()
+        player_score = PlayerScore()
         a = ram_state[9] % 16 + 10 * (ram_state[9] // 16)
         b = ram_state[10] % 16 + 10 * (ram_state[10] // 16)
         player_score.score = a * 100 + b

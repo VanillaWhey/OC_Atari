@@ -17,7 +17,7 @@ MAX_NB_OBJECTS =  {
     'Scorpion': 1
 }
 MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
-    'Score': 4,
+    'PlayerScore': 4,
     'Life': 2,
     'Ground': 1
 }
@@ -140,13 +140,13 @@ class Scorpion(CCGameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 96, 7
         self.wh = 7, 7
         self.rgb = 188, 144, 252
@@ -250,12 +250,12 @@ def _create_score_objects(score):
         value = _convert_number(sc)
         tenner = value // 10
         if value > 0 or i == 0:
-            s = Score()
+            s = PlayerScore()
             s.value = value % 10
             s.xy = basex - i * pad, 187
             ret.append(s)
         if tenner > 0 or i == 0:
-            s = Score()
+            s = PlayerScore()
             s.value = tenner
             s.xy = basex - i * pad - pad / 2, 187
             ret.append(s)
@@ -285,7 +285,7 @@ def _init_objects_ram(hud=False):
     for i in range(9):
         objects.append(CentipedeSegment())
     if hud:
-        # objects.append(Score())
+        # objects.append(PlayerScore())
         objects.extend(_create_score_objects([0]))
         objects.extend(_create_life_objects(2))
         objects.append(Ground())

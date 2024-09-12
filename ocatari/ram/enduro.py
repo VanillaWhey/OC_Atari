@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
 """
@@ -32,7 +32,7 @@ class Car(GameObject):
         self.rgb = 192,192,192
         self.hud = False
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     def __init__(self):
         super().__init__()
         self._xy = 0, 0

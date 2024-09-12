@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import bitfield_to_number, number_to_bitfield, _convert_number
 import math
 import sys
@@ -15,7 +15,7 @@ MAX_NB_OBJECTS =  {
     'Enemy': 3
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 4
 }
 
@@ -71,13 +71,13 @@ class ProjectileHostile(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):  # TODO
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 96, 7
         self.wh = 5, 9
         self.rgb = 223, 183, 85
@@ -162,7 +162,7 @@ def _init_objects_ram(hud=False):
     """
     objects = [Player(), ProjectileFriendly()]
     if hud:
-        objects.append(Score())
+        objects.append(PlayerScore())
         base_x = 17
         for i in range(3):
             live = Life()

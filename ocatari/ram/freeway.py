@@ -11,7 +11,7 @@ MAX_NB_OBJECTS =  {
     'Car': 10
 }
 MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
-    'Score' : 2
+    'PlayerScore' : 2
 }
 
 
@@ -41,13 +41,13 @@ class Car(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 49, 5
         self.wh = 6, 8
         self.rgb = 228, 111, 111
@@ -76,8 +76,8 @@ def _init_objects_ram(hud=False):
         y += 16
 
     if hud:
-        objects.append(Score())
-        s = Score()
+        objects.append(PlayerScore())
+        s = PlayerScore()
         s.xy = 113, 5
         objects.append(s)
 

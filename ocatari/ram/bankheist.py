@@ -9,7 +9,7 @@ MAX_NB_OBJECTS = {
     'Police': 3
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 6,
     'Gas_Tank': 1
 }
@@ -41,9 +41,9 @@ class Police(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 98, 179
         self.wh = (7, 7)
         self.rgb = 252, 252, 84
@@ -120,11 +120,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
         # 88-90 == score 
 
-        # Score
-        if type(objects[4]) == Score:
+        # PlayerScore
+        if type(objects[4]) == PlayerScore:
             score = objects[4]
         else:
-            score = Score()
+            score = PlayerScore()
             objects[4] = score
         if ram_state[88] > 15:
             score.xy = 58, 179

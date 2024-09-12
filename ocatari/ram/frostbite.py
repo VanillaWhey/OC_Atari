@@ -351,7 +351,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[46]=d2
             objects[47]=d1
         
-        # Player Score
+        # Player PlayerScore
         if ram_state[73]==0 and ram_state[74]==0:
             p=PlayerScore()
             p.xy=63,10

@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys 
 
 """
@@ -52,7 +52,7 @@ class Ball(GameObject):
         self.wh = (2,2)
         self.hud = False
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -64,7 +64,7 @@ class PlayerScore(GameObject):
         self.wh = (8, 7)
         self.hud = True
 
-class EnemyScore(GameObject):
+class EnemyScore(ValueObject):
     """
     The enemy's score display (HUD).
     """

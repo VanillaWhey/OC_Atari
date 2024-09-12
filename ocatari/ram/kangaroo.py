@@ -24,7 +24,7 @@ MAX_NB_OBJECTS = {
 }
 
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1
+    'PlayerScore': 1
 }
 
 
@@ -150,13 +150,13 @@ class Bell(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
 
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 129, 183
         self.wh = 15, 7
         self.rgb = 160, 171, 79
@@ -210,7 +210,7 @@ def _init_objects_ram(hud=True):
                Platform(16, 172, w=128), Platform(16, 28, w=128)]
     objects.extend([None]* 26)
     if hud: 
-        objects.extend([Score(), Time(), Life(), Life()])
+        objects.extend([PlayerScore(), Time(), Life(), Life()])
         objects.extend([None]* 6)
     return objects
 

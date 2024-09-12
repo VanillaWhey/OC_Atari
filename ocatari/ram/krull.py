@@ -8,7 +8,7 @@ MAX_NB_OBJECTS = {
     'Lyssa': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Weapon_HUD': 3,
     'Hour_Glass': 1,
     'Sun': 1,
@@ -156,9 +156,9 @@ class Hour_Glass(ValueObject):
         self.hud = True
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 0, 0
         self.wh = (7, 7)
         self.rgb = 252, 252, 84
@@ -451,8 +451,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[-8] = None
             
-        # Score
-        score = Score()
+        # PlayerScore
+        score = PlayerScore()
         objects[-7] = score
         if ram_state[28] > 15:
             score.xy = 57, 176

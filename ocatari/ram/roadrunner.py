@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 import sys
 
 """
@@ -19,7 +19,7 @@ MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Cactus': 6,
     'Sign': 1,
     'Bird': 2
-}# 'Score': 1}
+}# 'PlayerScore': 1}
 
 
 class Player(GameObject):
@@ -171,7 +171,7 @@ class Bird(GameObject):
         self.hud = True
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """

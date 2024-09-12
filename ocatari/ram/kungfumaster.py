@@ -18,7 +18,7 @@ MAX_NB_OBJECTS = {
     'Dragon_Fire': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Time': 1,
     'Lives': 1,
     'Player_Health_Bar': 1,
@@ -185,12 +185,12 @@ class Dragon_Fire(Projectile):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
-    Score of the game
+    PlayerScore of the game
     """
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 63, 20
         self.wh = (6, 7)
         self.rgb = 128, 232, 128
@@ -254,7 +254,7 @@ def _init_objects_ram(hud=False):
     # objects.extend()
     if hud:
         # objects.extend()
-        objects.extend([Score(), Time(), Lives(), Player_Health_Bar(), Enemy_Health_Bar()])
+        objects.extend([PlayerScore(), Time(), Lives(), Player_Health_Bar(), Enemy_Health_Bar()])
     return objects
 
 

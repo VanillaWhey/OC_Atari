@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game Fishing Derby.
@@ -12,7 +12,7 @@ MAX_NB_OBJECTS = {
     'Bumper': 9
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'LifeUsed': 1,
     'DifficultyLevel': 1
 }
@@ -110,7 +110,7 @@ class Bumper(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     def __init__(self):
         super().__init__()
         self.value = 0
@@ -147,7 +147,7 @@ def _init_objects_ram(hud=False):
         objects.append(Bumper(b_xy, b_wh))
     objects.append(None)
     if hud:
-        objects.extend([Score(), LifeUsed(), DifficultyLevel()])
+        objects.extend([PlayerScore(), LifeUsed(), DifficultyLevel()])
     return objects
 
 

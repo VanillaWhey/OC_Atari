@@ -8,7 +8,7 @@ MAX_NB_OBJECTS = {
     'Egg': 156
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 6
 }
 
@@ -49,9 +49,9 @@ class Pulsar(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 0, 0
         self.wh = (6, 7)
         self.rgb = 132, 144, 252
@@ -214,7 +214,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     if hud:
-        score = Score()
+        score = PlayerScore()
         objects[173] = score
         score.xy = 63, 176
         score.wh = 6, 7

@@ -1,4 +1,4 @@
-from .game_objects import GameObject, ValueObject, ValueObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -13,7 +13,7 @@ MAX_NB_OBJECTS =  {
     'Clue': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Clock': 1
 }
 
@@ -340,13 +340,13 @@ class Badguy_Head(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's merit score display.
     """
     
     def __init__(self, *args, **kwargs):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 97, 6
         self.wh = 5, 8
         self.rgb = 236, 236, 236
@@ -585,7 +585,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[7] = None
 
     if hud:
-        score = Score()
+        score = PlayerScore()
         objects[8] = score
         if ram_state[72] > 15:
             score.xy = 59, 8

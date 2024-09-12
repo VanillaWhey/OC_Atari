@@ -1,5 +1,5 @@
 import numpy as np
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number
 import sys
 
@@ -45,7 +45,7 @@ class Ball(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """

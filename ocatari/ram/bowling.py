@@ -1,6 +1,6 @@
 import sys
 from ._helper_methods import _convert_number
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game BOWLING. Supported modes: ram
@@ -56,7 +56,7 @@ class Pin(GameObject):
         self.hud = False
 
 
-class PlayerScore(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """

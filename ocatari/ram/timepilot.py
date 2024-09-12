@@ -17,7 +17,7 @@ MAX_NB_OBJECTS = {
     'Enemy_Orange_Shot': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 4
 }
 
@@ -129,9 +129,9 @@ class Enemy_Orange_Shot(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 57, 7
         self.wh = (46, 10)
         self.rgb = 210, 164, 74
@@ -496,8 +496,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if hud:
         if ram_state[0] > 1:
-            # Score
-            objects[-5] = Score()
+            # PlayerScore
+            objects[-5] = PlayerScore()
             
             # Lives
             if ram_state[11]&15 == 1:

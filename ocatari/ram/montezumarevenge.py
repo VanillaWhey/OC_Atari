@@ -1,4 +1,4 @@
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 from ._helper_methods import _convert_number, get_iou
 import sys
 
@@ -25,7 +25,7 @@ MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Amulet_HUD': 1,
     'Torch_HUD': 1,
     'Sword_HUD': 2,
-    'Score': 6,
+    'PlayerScore': 6,
     'Life': 5
 }
 
@@ -196,13 +196,13 @@ class Rope(GameObject):
         self.hud = False
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
     
     def __init__(self, *args, **kwargs):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 97, 6
         self.wh = 5, 8
         self.rgb = 236, 236, 236
@@ -881,31 +881,31 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         # score
         if ram_state[19] > 15:
             for i in range(6):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 97 - (i * 8), 6
                 objects[51+i] = score
         elif ram_state[19] > 0:
             for i in range(5):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 97 - (i * 8), 6
                 objects[51+i] = score
         elif ram_state[20] > 15:
             for i in range(4):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 97 - (i * 8), 6
                 objects[51+i] = score
         elif ram_state[20] > 0:
             for i in range(3):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 97 - (i * 8), 6
                 objects[51+i] = score
         elif ram_state[21] > 15:
             for i in range(2):
-                score = Score()
+                score = PlayerScore()
                 score.xy = 97 - (i * 8), 6
                 objects[51+i] = score
         else:
-            score = Score()
+            score = PlayerScore()
             objects[51] = score
 
     return objects

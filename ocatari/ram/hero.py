@@ -2,7 +2,7 @@ from enum import Enum
 
 import numpy as np
 
-from .game_objects import GameObject
+from .game_objects import GameObject, ValueObject
 
 """
 RAM extraction for the game H.E.R.O.
@@ -22,7 +22,7 @@ MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PowerBar': 1,
     'BombStock': 1,
     'Life': 1,
-    'Score': 1
+    'PlayerScore': 1
 }
 
 
@@ -171,7 +171,7 @@ class Life(GameObject):
         self.value = 4
 
 
-class Score(GameObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
@@ -190,7 +190,7 @@ def _get_max_objects(hud=False):
 def _init_objects_ram(hud=False):
     objects = [Player()]
     if hud:
-        objects.extend([PowerBar(), BombStock(), Life(), Score(), ])
+        objects.extend([PowerBar(), BombStock(), Life(), PlayerScore(), ])
     return objects
 
 

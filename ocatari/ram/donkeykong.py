@@ -19,7 +19,7 @@ MAX_NB_OBJECTS = {
     'DonkeyKong': 1
 }
 MAX_NB_OBJECTS_HUD  = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 2
 }
 
@@ -119,13 +119,13 @@ class DonkeyKong(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     """
     The player's score display (HUD).
     """
 
     def __init__(self):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 72, 7
         self.wh = 30, 7
         self.rgb = 158, 208, 201
@@ -166,7 +166,7 @@ class Life(GameObject):
 #     # for ppxy in pps:
 #     #     objects.append(PowerPill(*ppxy))
 #     if hud:
-#         objects.extend([Life(), Score()])
+#         objects.extend([Life(), PlayerScore()])
 #     return objects
 
 
@@ -180,13 +180,13 @@ def _init_objects_ram(hud=True):
     objects = [Player(), DonkeyKong(), Girlfriend(), Hammer()] + [None] * 4 + \
         [Ladder(*xy) for xy in ladders]
     if hud:
-        objects.extend([Life(), Score()])
+        objects.extend([Life(), PlayerScore()])
     return objects
     # manage_platforms(0, init_obj)
     # global prev_level
     # prev_level = 0
     # if hud:
-    #     init_obj.extend([Score()])
+    #     init_obj.extend([PlayerScore()])
     # return init_obj
 
 def _detect_objects_ram(objects, ram_state, hud=True):

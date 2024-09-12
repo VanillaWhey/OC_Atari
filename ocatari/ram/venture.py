@@ -12,7 +12,7 @@ MAX_NB_OBJECTS =  {
     'Hallmonsters': 6
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
-    'Score': 1,
+    'PlayerScore': 1,
     'Life': 3
 }
 
@@ -159,9 +159,9 @@ class Green_Collectable(GameObject):
         self.hud = False
 
 
-class Score(ValueObject):
+class PlayerScore(ValueObject):
     def __init__(self, *args, **kwargs):
-        super(Score, self).__init__()
+        super(PlayerScore, self).__init__()
         self._xy = 97, 6
         self.wh = 5, 8
         self.rgb = 170, 170, 170
@@ -375,7 +375,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
 
     if hud:
-        score = Score()
+        score = PlayerScore()
         objects[8] = score
         score.xy = 1, 9
         score.wh = 46, 8
