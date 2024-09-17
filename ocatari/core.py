@@ -3,8 +3,10 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from .ram.extract_ram_info import detect_objects_raw, detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, FEATURE_SIZE
+from ocatari.ram.extract_ram_info import detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import get_module as get_ram_module
 from ocatari.vision.extract_vision_info import detect_objects_vision
+from ocatari.vision.extract_vision_info import get_module as get_vision_module
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
@@ -15,7 +17,7 @@ try:
 except ModuleNotFoundError:
     print(
         '\nALE is required when using the ALE env wrapper. ',
-        'Try `pip install "gymnasium[atari, accept-rom-license]"`.\n',
+        'Try `pip install "gymnasium[atari,accept-rom-license]"`.\n',
     )
 
 import warnings
@@ -87,7 +89,7 @@ class OCAtari(gym.Env):
 
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
-    :param mode: The detection method type: one of `raw`, `ram`, or `vision`, or `both` (i.e. `ram` + `vision`)
+    :param mode: The detection method type: one of `ram`, or `vision`, or `both` (i.e. `ram` + `vision`)
     :type mode: str
     :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
     :type hud: bool
@@ -118,6 +120,8 @@ class OCAtari(gym.Env):
         gym_render_mode = "rgb_array" if render_oc_overlay else render_mode
         self._env = gym.make(env_name, render_mode=gym_render_mode, *args, **gym_args)
         self.game_name = game_name
+        self.vision_module_name = get_vision_module(self.game_name)
+        self.ram_module_name = get_ram_module(self.game_name)
         self.mode = mode
         self.obs_mode = obs_mode
         self.hud = hud
@@ -135,15 +139,26 @@ class OCAtari(gym.Env):
         elif mode == "revised" or mode== "ram" :
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
-            self.max_objects = get_max_objects(self.game_name, self.hud)
+            self.max_objects = get_max_objects(self.ram_module_name, self.hud)
             self.detect_objects = self._detect_objects_ram
+
+            feature_func = kwargs.get("feature_func", "xywh")
+            if feature_func == "xywh":
+                self.feature_func = lambda x: x.xywh
+                self.feature_size = 4
+            elif feature_func == "bounding_box":
+                self.feature_func = lambda x: x.bounding_box
+                self.feature_size = 4
+            else:  # fall back
+                self.feature_func = lambda x: x.xywh
+                self.feature_size = 4
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
-            self.objects_v = init_objects(self.game_name, self.hud)
+            self.objects_v = init_objects(self.ram_module_name, self.hud)
         else:
             print(colored("Undefined mode for information extraction", "red"))
             exit(1)
-        self._objects : list[GameObject] = init_objects(self.game_name, self.hud)
+        self._objects : list[GameObject] = init_objects(self.ram_module_name, self.hud)
         self._fill_buffer = lambda *args, **kwargs: None
         self._reset_buffer = lambda *args, **kwargs: None
         if obs_mode == "dqn":
@@ -159,7 +174,8 @@ class OCAtari(gym.Env):
         elif obs_mode == "obj":
             logger.info("Using OBJ State Representation")
             if mode == "ram":
-                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name, self.hud), FEATURE_SIZE))
+                shape = (self.buffer_window_size, get_object_state_size(self.ram_module_name, self.hud), self.feature_size)
+                self._env.observation_space = gym.spaces.Box(0,255.0, shape)
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
                 self.reference_list = []
@@ -184,7 +200,7 @@ class OCAtari(gym.Env):
         self._state_buffer = deque([], maxlen=self.buffer_window_size)
         self.action_space = self._env.action_space
         self._ale = self._env.unwrapped.ale
-        # inhererit every attribute and method of env
+        # inherit every attribute and method of env
         for meth in dir(self._env):
             if meth not in dir(self):
                 try:
@@ -219,14 +235,14 @@ class OCAtari(gym.Env):
         return obs, reward, truncated, terminated, info
     
     def _detect_objects_ram(self):
-        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
+        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.ram_module_name, self.hud)
 
     def _detect_objects_vision(self):
-        detect_objects_vision(self._objects, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
+        detect_objects_vision(self._objects, self._env.env.unwrapped.ale.getScreenRGB(), self.vision_module_name, self.hud)
 
     def _detect_objects_both(self):
-        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.game_name, self.hud)
-        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB(), self.game_name, self.hud)
+        detect_objects_ram(self._objects, self._env.env.unwrapped.ale.getRAM(), self.ram_module_name, self.hud)
+        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB(), self.vision_module_name, self.hud)
 
     def _reset_buffer_dqn(self):
         for _ in range(self.buffer_window_size):
@@ -247,7 +263,7 @@ class OCAtari(gym.Env):
         See `env.reset() <https://gymnasium.farama.org/api/env/#gymnasium.Env.reset>`_ for gymnasium details.
         """
         obs, info = self._env.reset(*args, **kwargs)
-        self._objects = init_objects(self.game_name, self.hud)
+        self._objects = init_objects(self.ram_module_name, self.hud)
         self.detect_objects()
         self._reset_buffer()
         obs = self._post_step(obs)
@@ -266,7 +282,8 @@ class OCAtari(gym.Env):
                                           **_tensor_kwargs))
 
     def _fill_buffer_obj(self):
-        state = get_object_state(self.reference_list, self._objects, self.game_name)        
+        state = get_object_state(self.reference_list, self._objects,
+                                 self.feature_func, self.feature_size)
         self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):
@@ -456,8 +473,8 @@ class OCAtari(gym.Env):
     
     def detect_objects_both(self):
         import ipdb; ipdb.set_trace()
-        detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM, self.game_name, self.hud)
-        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB, self.game_name, self.hud)
+        detect_objects_ram(self.objects, self._env.env.unwrapped.ale.getRAM, self.ram_module_name, self.hud)
+        detect_objects_vision(self.objects_v, self._env.env.unwrapped.ale.getScreenRGB, self.vision_module_name, self.hud)
 
     def _clone_state(self):
         """
