@@ -185,6 +185,10 @@ class GameObject:
     def center(self):
         return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
 
+    @property
+    def bounding_box(self):
+        return self._xy[0], self._xy[1], self._xy[0] + self.wh[0], self._xy[1] + self.wh[1]
+
     def is_on_top(self, other):
         """
         Returns ``True`` if this and another gameobject overlap.
