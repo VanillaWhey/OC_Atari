@@ -164,15 +164,6 @@ class GameObject:
     def _save_prev(self):
         self._prev_xy = self._xy
 
-    # @x.setter
-    # def x(self, x):
-
-    #     self._xy = x, self.xy[1]
-    
-    # @y.setter
-    # def y(self, y):
-    #     self._xy = self.xy[0], y
-
     @property
     def orientation(self):
         return self._orientation
