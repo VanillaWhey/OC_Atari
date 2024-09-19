@@ -10,7 +10,6 @@ from ocatari.vision.extract_vision_info import get_module as get_vision_module
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
 from ocatari.utils import draw_label, draw_arrow, draw_orientation_indicator
-from gymnasium.error import NameNotFound
 
 try:
     import ale_py
@@ -23,7 +22,6 @@ except ModuleNotFoundError:
 import warnings
 
 UPSCALE_FACTOR = 4
-BUFFER_WINDOW_SIZE = 4
 
 
 try:
@@ -82,26 +80,33 @@ AVAILABLE_GAMES = ["Adventure", "Alien", "Amidar", "Assault", "Asterix",
                    "VideoPinball", "YarsRevenge", "Zaxxon"]
 
 
-# TODO: complete the docstring 
 class OCAtari(gym.Env):
     """
-    The OCAtari environment. Initialize it to get a Atari environments with objects tracked.
+    The OCAtari environment. Initialize it to get an Atari environments with objects tracked.
 
     :param env_name: The name of the Atari gymnasium environment e.g. "Pong" or "PongNoFrameskip-v5"
     :type env_name: str
     :param mode: The detection method type: one of `ram`, or `vision`, or `both` (i.e. `ram` + `vision`)
     :type mode: str
-    :param hud: Whether to include or not objects from the HUD (e.g. scores, lives)
+    :param hud: Whether to include objects from the HUD (e.g. scores, lives)
     :type hud: bool
     :param obs_mode: Define the observation mode. Set to `dqn` (84x84, grayscaled), `ori` (210x160x3, RGB image), `obj` (#ObjectsxFEATURE_SIZE). `dqn` and `ori` are also organized in a stack of the last 4 frames.
     :type obs_mode: str
+    :param gym_args: The arguments passed to `gym.make(...)`
+    :type gym_args: dict
+    :param logger: The logger used for logging
+    :type logger: logger
+    :param feature_attr: The property of `GameObject` to use as feature vector
+    :type feature_attr: str
+    :param buffer_window_size: The window size for including past features in the observation
+    :type buffer_window_size: int
     
     the remaining \*args and \**kwargs will be passed to the \
         `gymnasium.make <https://gymnasium.farama.org/api/registry/#gymnasium.make>`_ function.
     """
     def __init__(self, env_name, mode="ram", hud=False, obs_mode="ori",
                  render_mode=None, render_oc_overlay=False, gym_args=None,
-                 logger=gym.logger, *args, **kwargs):
+                 logger=gym.logger, feature_attr="xywh", buffer_window_size=4, *args, **kwargs):
         if gym_args is None:
             gym_args = {}
         if "ALE/" in env_name: #case if v5 specified
@@ -126,7 +131,7 @@ class OCAtari(gym.Env):
         self.obs_mode = obs_mode
         self.hud = hud
         self.max_objects = []
-        self.buffer_window_size = BUFFER_WINDOW_SIZE
+        self.buffer_window_size = buffer_window_size
         self.step = self._step_impl
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
@@ -136,22 +141,16 @@ class OCAtari(gym.Env):
             self.objects_v = []
         elif mode == "vision":
             self.detect_objects = self._detect_objects_vision
-        elif mode == "revised" or mode== "ram" :
-            if mode == "revised":
-                warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
+        elif mode == "ram" :
             self.max_objects = get_max_objects(self.ram_module_name, self.hud)
             self.detect_objects = self._detect_objects_ram
 
-            feature_func = kwargs.get("feature_func", "xywh")
-            if feature_func == "xywh":
-                self.feature_func = lambda x: x.xywh
-                self.feature_size = 4
-            elif feature_func == "bounding_box":
-                self.feature_func = lambda x: x.bounding_box
-                self.feature_size = 4
-            else:  # fall back
-                self.feature_func = lambda x: x.xywh
-                self.feature_size = 4
+            self.feature_attr = feature_attr
+            try:
+                self.feature_size = len(getattr(GameObject(), feature_attr))
+            except Exception as e:
+                raise AttributeError("GameObject does not support this"
+                                     "feature representation.") from e
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
             self.objects_v = init_objects(self.ram_module_name, self.hud)
@@ -283,7 +282,7 @@ class OCAtari(gym.Env):
 
     def _fill_buffer_obj(self):
         state = get_object_state(self.reference_list, self._objects,
-                                 self.feature_func, self.feature_size)
+                                 self.feature_attr, self.feature_size)
         self._state_buffer.append(state)
 
     def _get_buffer_as_stack(self):

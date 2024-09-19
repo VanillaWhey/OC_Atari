@@ -47,13 +47,13 @@ def get_object_state_size(game_module, hud):
     return sum(game_module.MAX_NB_OBJECTS.values())
     
 
-def get_object_state(reference_list, objects, feature_func, num_features):
+def get_object_state(reference_list, objects, feature_attr, num_features):
     temp_ref_list = reference_list.copy()
     state = [[0] * num_features] * len(reference_list)
 
     for o in objects:  # populate out_vector with object instance
         if o is not None:
             idx = temp_ref_list.index(o.category)  # at position of first category occurrence
-            state[idx] = feature_func(o)  # write the slice
+            state[idx] = getattr(o, feature_attr)  # write the slice
             temp_ref_list[idx] = False  # remove reference from reference list
     return state
