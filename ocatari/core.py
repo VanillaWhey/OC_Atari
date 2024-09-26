@@ -3,7 +3,7 @@ from collections import deque
 import gymnasium as gym
 from termcolor import colored
 import numpy as np
-from ocatari.ram.extract_ram_info import detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size
+from ocatari.ram.extract_ram_info import detect_objects_ram, init_objects, get_max_objects, get_object_state, get_object_state_size, get_reference_list
 from ocatari.ram.extract_ram_info import get_module as get_ram_module
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.extract_vision_info import get_module as get_vision_module
@@ -177,14 +177,7 @@ class OCAtari(gym.Env):
                 self._env.observation_space = gym.spaces.Box(0,255.0, shape)
                 self._fill_buffer = self._fill_buffer_obj
                 self._reset_buffer = self._reset_buffer_obj
-                self.reference_list = []
-                obj_counter = {}
-                for o in self.max_objects:
-                    if o.category not in obj_counter.keys():
-                        obj_counter[o.category] = 0
-                    obj_counter[o.category] += 1
-                for k in list(obj_counter.keys()):
-                    self.reference_list.extend([k for i in range(obj_counter[k])])
+                self.reference_list = get_reference_list(self.ram_module_name, hud)
             else:
                 print(colored("This obs mode is only available in ram mode", "red"))
                 exit(1)

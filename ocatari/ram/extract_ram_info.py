@@ -30,6 +30,16 @@ def get_max_objects(game_module, hud):
     return objects
 
 
+def get_reference_list(game_module, hud):
+    ref_list = []
+    if hud:
+        max_obj_dict = game_module.MAX_NB_OBJECTS_HUD
+    else:
+        max_obj_dict = game_module.MAX_NB_OBJECTS
+    for o in max_obj_dict.keys():
+        ref_list.extend([o for _ in range(max_obj_dict[o])])
+    return ref_list
+
 def init_objects(game_module, hud):
     return game_module._init_objects_ram(hud)
 
