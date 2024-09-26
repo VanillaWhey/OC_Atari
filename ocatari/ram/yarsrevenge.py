@@ -9,9 +9,10 @@ MAX_NB_OBJECTS = {
     'Player': 1,
     'Enemy': 1,
     'Swirl': 1,
-    'Enemy_Missile': 1,
-    'Barrier': 5,
-    'Shield_Block': 162
+    'EnemyMissile': 1,
+    'PlayerMissile': 1,
+    'Barrier': 1,
+    'ShieldBlock': 128
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1,
@@ -54,9 +55,9 @@ class Swirl(GameObject):
         self.rgb = 169,128,240 
         self.hud = False
 
-class Enemy_Missile(GameObject):
+class EnemyMissile(GameObject):
     """
-    The Destroyer Missles fired by the Qotile.
+    The Destroyer Missiles fired by the Qotile.
     """
     
     def __init__(self):
@@ -78,9 +79,9 @@ class Barrier(GameObject):
         self.rgb = 250,250,250
         self.hud = False
 
-class Player_Bullet(GameObject):
+class PlayerMissile(GameObject):
     """
-    The Energy Missles fired by the player.
+    The Energy Missiles fired by the player.
     """
     
     def __init__(self):
@@ -90,7 +91,7 @@ class Player_Bullet(GameObject):
         self.rgb = 169,128,240
         self.hud = False
 
-class Shield_Block(GameObject):
+class ShieldBlock(GameObject):
     """
     The cells of the energy shield protecting the Qotile.
     """
@@ -152,12 +153,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[2]=swirl
             objects[1]=None
         # Enemy Missile 
-        e_m=Enemy_Missile()
+        e_m=EnemyMissile()
         e_m.xy=ram_state[47],ram_state[46]+2
         objects[3]=e_m
         # Player Missile
         if abs(ram_state[38]-3-ram_state[32])>5 and abs(ram_state[37]-ram_state[31])>5:
-            p_m=Player_Bullet()
+            p_m=PlayerMissile()
             p_m.xy=ram_state[38]-1,ram_state[37]+4
             objects[5]=p_m
         else:
@@ -171,58 +172,57 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[4]=None
 
         # blocks ram 0 to 16 binary coding lsb left to msb right
-
         for j in range(16):
             for i in range(8):
                 if ram_state[j+1] & 2**i:
-                    block = Shield_Block()
-                    objects[5+(i+(j*8))] = block
+                    block = ShieldBlock()
+                    objects[6+(i+(j*8))] = block
                     if j == 15:
                         block.xy = 128 + (i*4), ram_state[26] + 122 - (j*8)
                         block.wh = 4, 7
                     else:
                         block.xy = 128 + (i*4), ram_state[26] + 121 - (j*8)
                 else:
-                    objects[5+(i+(j*8))] = None
+                    objects[6+(i+(j*8))] = None
     else:
-        objects[0:] = [None]*172
+        objects[0:] = [None] * 133
 
-        if hud:
-            # scores ram: 96-98 lives 99
-            if ram_state[96] > 15:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 55, 47
-                score.wh = 47, 7
-            elif ram_state[96]:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 63, 48
-                score.wh = 39, 7
-            elif ram_state[97] > 15:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 71, 48
-                score.wh = 31, 7
-            elif ram_state[97]:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 79, 48
-                score.wh = 23, 7
-            elif ram_state[98] > 15:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 87, 48
-                score.wh = 15, 7
-            elif ram_state[98]:
-                score = PlayerScore()
-                objects[0] = score
-                score.xy = 95, 48
-                score.wh = 7, 7
+    if hud:
+        # scores ram: 96-98 lives 99
+        if ram_state[96] > 15:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 55, 47
+            score.wh = 47, 7
+        elif ram_state[96]:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 63, 48
+            score.wh = 39, 7
+        elif ram_state[97] > 15:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 71, 48
+            score.wh = 31, 7
+        elif ram_state[97]:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 79, 48
+            score.wh = 23, 7
+        elif ram_state[98] > 15:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 87, 48
+            score.wh = 15, 7
+        elif ram_state[98]:
+            score = PlayerScore()
+            objects.append(score)
+            score.xy = 95, 48
+            score.wh = 7, 7
 
-            life = Life()
-            objects[1] = life
-            life.xy = 95, 74
+        life = Life()
+        objects.append(life)
+        life.xy = 95, 74
         
     # import ipdb; ipdb.set_trace()
 
