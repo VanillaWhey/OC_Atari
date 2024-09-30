@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, '../../') # noqa
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-# from ocatari.ram.demonAttack import ProjectileHostile
+# from ocatari.ram.demonAttack import EnemyMissile
 # from ocatari.ram import asterix
 # from asterix import rev
 # asterix.

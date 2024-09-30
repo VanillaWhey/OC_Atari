@@ -10,7 +10,7 @@ import pickle
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
 from ocatari.utils import load_agent, parser
-from ocatari.ram.demonattack import ProjectileHostile
+from ocatari.ram.demonattack import EnemyProjectile
 
 game_name = "ChopperCommandNoFrameskip-v4"
 MODE = "vision"
@@ -57,7 +57,7 @@ for i in range(100000):
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
-                if isinstance(obj, ProjectileHostile):
+                if isinstance(obj, EnemyProjectile):
                     sur_col = 255, 255, 255
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))
