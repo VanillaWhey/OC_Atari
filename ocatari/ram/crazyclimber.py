@@ -1,14 +1,11 @@
 from .game_objects import GameObject, ValueObject
-import sys
-
-from ..vision.crazyclimber import Yellow_Ball
 
 MAX_NB_OBJECTS = {
     'Player': 1,
     'Window': 72,
     'Enemy_Red': 1,
     'Enemy_Bird': 1,
-    'Projectile': 1,
+    'EnemyProjectile': 1,
     'Helicopter': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
@@ -52,38 +49,38 @@ class Enemy_Bird(GameObject):
         self.hud = False
         self.orientation = 1
 
-class Projectile(GameObject):
+class EnemyProjectile(GameObject):
     @property
     def category(self):
-        return "Projectile"
+        return "EnemyProjectile"
 
 
-class Yellow_Projectile(Projectile):
+class YellowProjectile(EnemyProjectile):
     def __init__(self):
-        super(Yellow_Projectile, self).__init__()
+        super(YellowProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = (6, 12)
         self.rgb = 210, 210, 64
         self.hud = False
 
-class Purple_Projectile(Projectile):
+class PurpleProjectile(EnemyProjectile):
     def __init__(self):
-        super(Purple_Projectile, self).__init__()
+        super(PurpleProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = (4, 12)
         self.rgb = 181, 108, 224
         self.hud = False
 
-class Blue_Projectile(Projectile):
+class BlueProjectile(EnemyProjectile):
     def __init__(self):
-        super(Blue_Projectile, self).__init__()
+        super(BlueProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = (6, 12)
         self.rgb = 101, 160, 225
         self.hud = False
 
 
-class Yellow_Ball(Projectile):
+class Yellow_Ball(EnemyProjectile):
     def __init__(self):
         super(Yellow_Ball, self).__init__()
         self._xy = 0, 0
@@ -270,30 +267,30 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     else:
         objects[73] = None
     
-    # projectile xy == 14,81; closing/offset == 16
-    # projectile color == 83; purple == 219; blue == 229; yellow == 239
+    # Missile xy == 14,81; closing/offset == 16
+    # Missile color == 83; purple == 219; blue == 229; yellow == 239
     # yellow ball == 145;
     # 85 == x of ball
 
     if ram_state[81]:
         x = ram_state[85]-10
         if ram_state[83] == 239:
-            projectile = Yellow_Projectile()
+            Missile = YellowProjectile()
         elif ram_state[83] == 229:
-            projectile = Blue_Projectile()
+            Missile = BlueProjectile()
             x+=1
         elif ram_state[83] == 219:
-            projectile = Purple_Projectile()
+            Missile = PurpleProjectile()
             x+=2
         elif ram_state[83] == 145:
-            projectile = Yellow_Ball()
+            Missile = Yellow_Ball()
         else:
-            projectile = None
-        objects[74] = projectile
+            Missile = None
+        objects[74] = Missile
         if ram_state[83] == 145:
-            projectile.xy = x, 42 + int(ram_state[81]*1.2) # (49 + int(ram_state[81]*1.1))
-        elif projectile is not None:
-            projectile.xy = x, 35 + int(ram_state[81]*1.2)# int((ram_state[82] - ram_state[81])/5)
+            Missile.xy = x, 42 + int(ram_state[81]*1.2) # (49 + int(ram_state[81]*1.1))
+        elif Missile is not None:
+            Missile.xy = x, 35 + int(ram_state[81]*1.2)# int((ram_state[82] - ram_state[81])/5)
     else:
         objects[74] = None
 

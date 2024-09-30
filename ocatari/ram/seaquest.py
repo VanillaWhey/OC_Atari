@@ -15,8 +15,8 @@ MAX_NB_OBJECTS = {
     'Shark': 12,
     'Submarine': 12,
     'SurfaceSubmarine': 1,
-    'PlayerMissile': 1,
-    'EnemyMissile': 4,
+    'PlayerProjectile': 1,
+    'EnemyProjectile': 4,
     'OxygenBar': 1,
     'CollectedDiver': 6,
 }
@@ -89,7 +89,7 @@ class SurfaceSubmarine(Submarine):
     """
 
 
-class EnemyMissile(GameObject):
+class EnemyProjectile(GameObject):
     """
     The torpedoes fired from enemy submarines.
     """
@@ -102,7 +102,7 @@ class EnemyMissile(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The torpedoes launched from the player's submarine.
     """
@@ -284,8 +284,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         if 0 < ram_state[71 + l] < 160:
             if _is_submarine(l, ram_state):  # then, it's an enemy missile
                 missile = objects[13 + l]
-                if type(missile) != EnemyMissile:
-                    missile = EnemyMissile()
+                if type(missile) != EnemyProjectile:
+                    missile = EnemyProjectile()
                 missile.xy = ram_state[71 + l] + 3, 145 - l * 24
                 objects[13 + l] = missile
             else:
@@ -309,7 +309,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if 0 < ram_state[103] < 160:
         if objects[18] is None:
-            objects[18] = PlayerMissile()
+            objects[18] = PlayerProjectile()
         objects[18].xy = ram_state[103], ram_state[97] + 40
     else:
         objects[18] = None

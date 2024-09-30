@@ -10,8 +10,8 @@ RAM extraction for the game GALAXIAN. Supported modes: ram.
 # TODO: Diving Enemies, Enemy Missiles, Enemy x pos, width of PlayerScore and Round
 MAX_NB_OBJECTS =  {
     'Player': 1,
-    'PlayerMissile': 1,
-    'EnemyMissile': 2,
+    'PlayerProjectile': 1,
+    'EnemyProjectile': 2,
     'EnemyShip': 35
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
@@ -33,7 +33,7 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The projectiles fired by the player. 
     """
@@ -46,7 +46,7 @@ class PlayerMissile(GameObject):
         self.hud = False
 
 
-class EnemyMissile(GameObject):
+class EnemyProjectile(GameObject):
     """
     The projectiles fired by the Enemy. 
     """
@@ -111,10 +111,10 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), PlayerMissile()]
+    objects = [Player(), PlayerProjectile()]
 
-    # for i in range(MAX_NB_OBJECTS('EnemyMissile')):
-    #     missile = EnemyMissile()
+    # for i in range(MAX_NB_OBJECTS('EnemyProjectile')):
+    #     missile = EnemyProjectile()
     #     objects.append(missile)
 
     if hud:
@@ -141,7 +141,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player_missile = objects[1]
     if ram_state[11] != 255 and ram_state[11] != 151: #else there is no missile
         if player_missile is None:
-            player_missile = PlayerMissile()
+            player_missile = PlayerProjectile()
             objects[1] = player_missile
         player_missile.x, player_missile.y = ram_state[60] + 2, ram_state[11] + 16
     elif player_missile is not None:

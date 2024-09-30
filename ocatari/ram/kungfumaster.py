@@ -14,7 +14,7 @@ MAX_NB_OBJECTS = {
     'Airball': 1,
     'Small_Enemy': 1,
     'Enemy_Final_Fighter': 1,
-    'Projectile': 1,
+    'EnemyProjectile': 1,
     'Dragon_Fire': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
@@ -157,14 +157,14 @@ class Enemy_Final_Fighter(GameObject):
         self.rgb = 74, 74, 74
         self.hud = False
 
-class Projectile(GameObject):
+class EnemyProjectile(GameObject):
     @property
     def category(self):
-        return "Projectile"
+        return "EnemyProjectile"
 
-class Knifes(Projectile):
+class Knifes(EnemyProjectile):
     """
-    Knifes throw by Knife_Throwers or Final_Fighters
+    Knifes thrown by Knife_Throwers or Final_Fighters
     """
     def __init__(self):
         super(Knifes, self).__init__()
@@ -173,7 +173,7 @@ class Knifes(Projectile):
         self.rgb = 74, 74, 74
         self.hud = False
 
-class Dragon_Fire(Projectile):
+class Dragon_Fire(EnemyProjectile):
     """
     Fire spit by the dragon
     """

@@ -10,8 +10,8 @@ RAM extraction for the game Demon Attack.
 # TODO: populate 
 MAX_NB_OBJECTS =  {
     'Player': 1,
-    'ProjectileFriendly': 1,
-    'ProjectileHostile': 8,
+    'PlayerProjectile': 1,
+    'EnemyProjectile': 8,
     'Enemy': 3
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
@@ -45,26 +45,26 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class ProjectileFriendly(GameObject):
+class PlayerProjectile(GameObject):
     """
     The projectiles shot from the player's laser cannon. 
     """
     
     def __init__(self):
-        super(ProjectileFriendly, self).__init__()
+        super(PlayerProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 8
         self.rgb = 212, 140, 252
         self.hud = False
 
 
-class ProjectileHostile(GameObject):
+class EnemyProjectile(GameObject):
     """
     Projectiles shot by the enemy demons. 
     """
     
     def __init__(self):
-        super(ProjectileHostile, self).__init__()
+        super(EnemyProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 4
         self.rgb = 252, 144, 144
@@ -109,7 +109,7 @@ def calculate_small_projectiles_from_bitmap(bitmap, basex):
         index = 0
         for b in bitfield:
             if b == 1:
-                proj = ProjectileHostile()
+                proj = EnemyProjectile()
                 proj.xy = basex - 3 + index, current_y - 4 # projectiles are only one pixel wide
                 result.append(proj)
             index += 1
@@ -160,7 +160,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), ProjectileFriendly()]
+    objects = [Player(), PlayerProjectile()]
     if hud:
         objects.append(PlayerScore())
         base_x = 17

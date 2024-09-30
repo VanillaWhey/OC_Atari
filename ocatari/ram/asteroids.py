@@ -13,7 +13,7 @@ another RAM state which separates them into quadrants or the x-Axis is moving.
 MAX_NB_OBJECTS = {
     'Player': 1,
     'Asteroid': 30,  # Asteroid count can get really high
-    'PlayerMissile': 2
+    'PlayerProjectile': 2
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'Lives': 1,
@@ -48,13 +48,13 @@ class Asteroid(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The photon torpedoes that can be fired from the space ship. 
     """
     
     def __init__(self):
-        super(PlayerMissile, self).__init__()
+        super(PlayerProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 2
         self.rgb = 117, 181, 239
@@ -267,7 +267,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[16+i] = None
     
     if ram_state[83] and not ram_state[86]&128:
-        miss = PlayerMissile()
+        miss = PlayerProjectile()
         objects[16] = miss
         miss.xy = _x_position(ram_state[83]) + 1, 175 - 2 * (80 - ram_state[86]) + 2
     else:
@@ -275,7 +275,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
 
     if ram_state[84] and not ram_state[87]&128:
-        miss = PlayerMissile()
+        miss = PlayerProjectile()
         objects[17] = miss
         miss.xy = _x_position(ram_state[84]) + 1, 175 - 2 * (80 - ram_state[87]) + 2
     else:

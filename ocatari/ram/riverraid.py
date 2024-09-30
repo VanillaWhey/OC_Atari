@@ -12,7 +12,7 @@ the players y-Position not stored in the RAM.
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'PlayerMissile': 1,
+    'PlayerProjectile': 1,
     'Bridge': 1,
     'Tanker': 6,
     'FuelDepot': 6,
@@ -60,7 +60,7 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The missles shot from the player's jet.
     """
@@ -213,7 +213,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # player missile
     if ram_state[117] != 0 and 162 - ram_state[50] >= 0:  # else not firing
         if missile is None:
-            missile = PlayerMissile()
+            missile = PlayerProjectile()
             objects[1] = missile
         missile.xy = ram_state[117] - 1, 162 - ram_state[50]
     elif missile is not None:

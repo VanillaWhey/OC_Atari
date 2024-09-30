@@ -8,7 +8,7 @@ RAM extraction for the game KANGUROO. Supported modes: ram.
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'Player_Projectile':1,
+    'PlayerProjectile':1,
     'Torpedos': 1,
     'Saucer': 7
 }
@@ -31,9 +31,9 @@ class Player(GameObject):
         self.hud = False
 
 
-class Player_Projectile(GameObject):
+class PlayerProjectile(GameObject):
     """
-    The laser lariats that can be fired from the space ship. 
+    The laser lariats that can be fired from the spaceship.
     """
     
     def __init__(self):
@@ -43,7 +43,7 @@ class Player_Projectile(GameObject):
 
 class Torpedos(GameObject):
     """
-    The limited torpedoes that can be fired from the space ship. 
+    The limited torpedoes that can be fired from the spaceship.
     """
     
     def __init__(self):
@@ -141,9 +141,9 @@ class Rock(GameObject):
         self.rgb = 134, 134, 29
 
 
-class Torpedos_Available(GameObject):
+class TorpedosAvailable(GameObject):
     """
-    The torpedoe availability display.
+    The torpedo availability display.
     """
     
     def __init__(self):
@@ -151,7 +151,7 @@ class Torpedos_Available(GameObject):
         self.rgb = 104, 25, 154
 
 
-class Enemy_Projectile(GameObject):
+class EnemyProjectile(GameObject):
     """
     Enemy projectiles. 
     """

@@ -8,11 +8,11 @@ RAM extraction for the game ASSAULT. Supported modes: ram.
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'PlayerMissileVertical': 1,
-    'PlayerMissileHorizontal': 1,
+    'PlayerProjectileVertical': 1,
+    'PlayerProjectileHorizontal': 1,
     'MotherShip': 1,
     'Enemy': 9,
-    'EnemyMissile': 1
+    'EnemyProjectile': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 6,
@@ -35,7 +35,7 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissileVertical(GameObject):
+class PlayerProjectileVertical(GameObject):
     """
     The projectile shot in the vertical direction from the cannon. 
     """
@@ -49,7 +49,7 @@ class PlayerMissileVertical(GameObject):
         self.hud = False
 
 
-class PlayerMissileHorizontal(GameObject):
+class PlayerProjectileHorizontal(GameObject):
     """
     The projectiles shot in the horizontal direction from the cannon. 
     """
@@ -92,7 +92,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class EnemyMissile(GameObject):
+class EnemyProjectile(GameObject):
     """
     The projectiles shot at the player by the enemy drones.
     """
@@ -156,7 +156,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [] #Player(), PlayerMissileVertical(), Enemy(), EnemyMissile(), MotherShip()
+    objects = [] #Player(), PlayerProjectileVertical(), Enemy(), EnemyProjectile(), MotherShip()
     objects.extend([None] * 8)
     if hud:
         objects.extend([None] * 15) #[PlayerScore(), Health(), Life()]
@@ -206,7 +206,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         player.xy = player_x_pos_128[ram_state[16] % 16] - x_diff, 178
 
     # player missile
-    missile = PlayerMissileVertical()
+    missile = PlayerProjectileVertical()
     if 7 < ram_state[67] < 119:
         val = ram_state[39]
         x_diff = (val // 16) % 8
@@ -274,7 +274,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # player missile horizontal
     if ram_state[24] == 88:
-        mis = PlayerMissileHorizontal()
+        mis = PlayerProjectileHorizontal()
         mis_offset = 2
         #if horizontal_pos == 0 or horizontal_pos > 130 or horizontal_pos < 20:
         #    horizontal_pos = player.x
@@ -407,7 +407,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # enemy missile
     if ram_state[75] == 128:
-        missile = EnemyMissile()
+        missile = EnemyProjectile()
 
         if ram_state[40] == 212:    # brown enemy, with red missile
             missile.xy = enemy_missile_x + 8, 30 + ram_state[73]

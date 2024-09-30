@@ -8,7 +8,7 @@ sys.path.insert(0, '../../')  # noqa
 
 from ocatari.core import OCAtari
 from ocatari.vision.utils import mark_bb, make_darker
-from ocatari.ram.demonattack import ProjectileHostile
+from ocatari.ram.demonattack import EnemyProjectile
 from ocatari.utils import load_agent, parser
 
 
@@ -49,7 +49,7 @@ for i in range(10000000):
                 opos = obj.xywh
                 ocol = obj.rgb
                 sur_col = make_darker(ocol)
-                if isinstance(obj, ProjectileHostile):
+                if isinstance(obj, EnemyProjectile):
                     sur_col = 255, 255, 255
                 mark_bb(obs, opos, color=sur_col)
             # mark_point(obs, *opos[:2], color=(255, 255, 0))

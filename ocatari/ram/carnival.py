@@ -8,7 +8,7 @@ RAM extraction for the game CARNIVAL. Supported modes: ram.
 
 MAX_NB_OBJECTS =  {
     'Player': 1,
-    'PlayerMissile': 1,
+    'PlayerProjectile': 1,
     'Rabbit': 6,
     'Duck': 5,
     'ExtraBullets': 4,
@@ -36,7 +36,7 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     Projectiles fired from the player's gun.
     """
@@ -238,7 +238,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 x_missile = ram_state[2]
             else:
                 x_missile = ram_state[2] - 6
-        missile = PlayerMissile()
+        missile = PlayerProjectile()
         if ram_state[55] > 99:
             missile.xy = x_missile, ram_state[55] + 6
             y_prev_missile = ram_state[55] + 6

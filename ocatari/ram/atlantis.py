@@ -13,7 +13,7 @@ MAX_NB_OBJECTS =  {
     'DomedPalace': 1,
     'BridgedBazaar': 1,
     'AquaPlane': 1,
-    'Projectile': 2,
+    'PlayerProjectile': 2,
     'GorgonShip': 4,
     'Deathray': 1,
     'BanditBomber': 2
@@ -21,7 +21,6 @@ MAX_NB_OBJECTS =  {
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1
 }
-MAX_NB_OBJECTS_HUD['BanditBomber'] = 3  # todo why?
 
 class Sentry(GameObject):
     """
@@ -37,7 +36,7 @@ class Sentry(GameObject):
 
 
 # No clue how the projectiles work
-class Projectile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The projectiles shot from the sentry posts or the Acropolis Command Post. 
     """
@@ -195,22 +194,6 @@ def _init_objects_ram(hud=True):
     return objects
 
 
-# parses MAX_NB* dicts, returns default init list of objects
-def _get_max_objects(hud=False):
-
-    def fromdict(max_obj_dict):
-        objects = []
-        mod = sys.modules[__name__]
-        for k, v in max_obj_dict.items():
-            for _ in range(0, v):
-                objects.append(getattr(mod, k)())
-        return objects
-
-    if hud:
-        return fromdict(MAX_NB_OBJECTS_HUD)
-    return fromdict(MAX_NB_OBJECTS)
-
-
 # Determines whether the deathray can be used by the ships or not
 global ray_available
 # Saves the previous amount of buildings that are still standing
@@ -249,7 +232,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     global prev_x_p2
 
     if ram_state[58] != 0 and ram_state[60] != 0:
-        proj = Projectile()
+        proj = PlayerProjectile()
         if prev_x_p1 < ram_state[60]:
             proj.xy = ram_state[60]-3, missile_pos(ram_state[58])-1
         elif prev_x_p1 == ram_state[60]:
@@ -262,7 +245,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     prev_x_p1 = ram_state[60]
 
     if ram_state[59] != 0 and ram_state[61] != 0:
-        proj = Projectile()
+        proj = PlayerProjectile()
         if prev_x_p2 < ram_state[61]:
             proj.xy = ram_state[61]-3, missile_pos(ram_state[59])-1
         elif prev_x_p2 == ram_state[61]:

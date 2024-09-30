@@ -9,7 +9,7 @@ RAM extraction for the game Centipede.
 
 MAX_NB_OBJECTS =  {
     'Player': 1,
-    'Projectile': 1,
+    'PlayerProjectile': 1,
     'CentipedeSegment': 9,
     'Mushroom': 42,
     'Spider': 1,
@@ -70,13 +70,13 @@ class Player(CCGameObject):
         self.hud = False
 
 
-class Projectile(GameObject):
+class PlayerProjectile(GameObject):
     """
-    The spells casted from the magic wand. 
+    The spells cast from the magic wand.
     """
     
     def __init__(self):
-        super(Projectile, self).__init__()
+        super(PlayerProjectile, self).__init__()
         self._xy = 0, 0
         self.wh = 1, 8
         self._offset = 0
@@ -281,7 +281,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Projectile()]  # , Spider(), Ghost(), Flea()
+    objects = [Player(), PlayerProjectile()]  # , Spider(), Ghost(), Flea()
     for i in range(9):
         objects.append(CentipedeSegment())
     if hud:
@@ -309,7 +309,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         projectile = None
     else:
         if projectile is None:
-            projectile = Projectile()
+            projectile = PlayerProjectile()
         projectile.xy = 16 + ram_state[110], _number_lowpass(ram_state[112]) * 9 - 8
 
     objects.clear()

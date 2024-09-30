@@ -4,14 +4,14 @@ import sys
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'Player_Projectile': 1,
+    'PlayerProjectile': 1,
     'Phoenix': 8,
     'Bat': 7,
     'Boss': 1,
     'Boss_Block_Green': 2,
     'Boss_Block_Blue': 48,
     'Boss_Block_Red': 104,
-    'Enemy_Projectile': 3
+    'EnemyProjectile': 3
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1,
@@ -29,12 +29,12 @@ class Player(GameObject):
         self.rgb = 213, 130, 74
         self.hud = False
 
-class Player_Projectile(GameObject):
+class PlayerProjectile(GameObject):
     """
     Player projectile. Only one can be on screen at a time
     """
     def __init__(self):
-        super(Player_Projectile, self).__init__()
+        super(PlayerProjectile, self).__init__()
         self._xy = 76, 100
         self.wh = (1, 6)
         self.rgb = 158, 208, 101
@@ -51,12 +51,12 @@ class Phoenix(GameObject):
         self.rgb = 227, 151, 89
         self.hud = False
 
-class Enemy_Projectile(GameObject):
+class EnemyProjectile(GameObject):
     """
     Projectiles shot by the enemy.
     """
     def __init__(self):
-        super(Enemy_Projectile, self).__init__()
+        super(EnemyProjectile, self).__init__()
         self._xy = 76, 100
         self.wh = (1, 6)
         self.rgb = 227, 151, 89
@@ -176,7 +176,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects[0].xy = ram_state[94] - 70, 173
 
     if not ram_state[84]:
-        objects[1] = Player_Projectile()
+        objects[1] = PlayerProjectile()
         objects[1].xy = ram_state[93] - 71, 201 - ram_state[89]
     
     for i in range(4):
@@ -188,7 +188,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 x = 5 + (right-3) * 15 - left
 
-            objects[2+i] = Enemy_Projectile()
+            objects[2+i] = EnemyProjectile()
             objects[2+i].xy = x, 189 - ram_state[58+i]
         else:
             objects[2+i] = None

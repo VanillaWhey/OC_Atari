@@ -9,8 +9,8 @@ MAX_NB_OBJECTS = {
     'Player': 1,
     'Enemy': 1,
     'Swirl': 1,
-    'EnemyMissile': 1,
-    'PlayerMissile': 1,
+    'EnemyProjectile': 1,
+    'PlayerProjectile': 1,
     'Barrier': 1,
     'ShieldBlock': 128
 }
@@ -55,7 +55,7 @@ class Swirl(GameObject):
         self.rgb = 169,128,240 
         self.hud = False
 
-class EnemyMissile(GameObject):
+class EnemyProjectile(GameObject):
     """
     The Destroyer Missiles fired by the Qotile.
     """
@@ -79,7 +79,7 @@ class Barrier(GameObject):
         self.rgb = 250,250,250
         self.hud = False
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The Energy Missiles fired by the player.
     """
@@ -153,12 +153,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[2]=swirl
             objects[1]=None
         # Enemy Missile 
-        e_m=EnemyMissile()
+        e_m=EnemyProjectile()
         e_m.xy=ram_state[47],ram_state[46]+2
         objects[3]=e_m
         # Player Missile
         if abs(ram_state[38]-3-ram_state[32])>5 and abs(ram_state[37]-ram_state[31])>5:
-            p_m=PlayerMissile()
+            p_m=PlayerProjectile()
             p_m.xy=ram_state[38]-1,ram_state[37]+4
             objects[5]=p_m
         else:

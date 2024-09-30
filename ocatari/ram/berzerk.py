@@ -11,8 +11,8 @@ Attention: EvilOtto enemy not implemented due to not getting it spawned during d
 MAX_NB_OBJECTS =  {
     'Player': 1,
     'Enemy': 8,
-    'PlayerMissile': 1,
-    'EnemyMissile': 1
+    'PlayerProjectile': 1,
+    'EnemyProjectile': 1
 }
 MAX_NB_OBJECTS_HUD =  MAX_NB_OBJECTS | {
     'PlayerScore': 1,
@@ -33,7 +33,7 @@ class Player(GameObject):
         self.hud = False
 
 
-class PlayerMissile(GameObject):
+class PlayerProjectile(GameObject):
     """
     The projectiles shot from the player's laser gun. 
     """
@@ -59,7 +59,7 @@ class Enemy(GameObject):
         self.hud = False
 
 
-class EnemyMissile(GameObject):
+class EnemyProjectile(GameObject):
     """
     The projectiles fired at the player by the enemy Automazeons. 
     """
@@ -118,7 +118,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), PlayerMissile(), Enemy(), EnemyMissile()]
+    objects = [Player(), PlayerProjectile(), Enemy(), EnemyProjectile()]
     if hud:
         objects.extend([PlayerScore(), RoomCleared(), Logo()])
     return objects
@@ -150,7 +150,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # player missile
     if ram_state[22] != 0 and ram_state[23] != 0:
-        missile = PlayerMissile()
+        missile = PlayerProjectile()
         y = 0
         x = 0
         add_missile = True
@@ -209,7 +209,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # enemy missile
     if ram_state[29] != 0 and ram_state[30] != 0:
-        missile = EnemyMissile()
+        missile = EnemyProjectile()
         x = ram_state[29] + 2
         y = ram_state[30] * 2
         add_en_missile = True
