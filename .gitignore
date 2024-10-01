@@ -35,3 +35,5 @@ reports
 
 *.pickle
 docs/_build
+
+.idea
