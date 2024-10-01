@@ -4,8 +4,19 @@ import sys
 
 MAX_NB_OBJECTS = {
     'Player': 1,
-    'Others': 500,
-    'Lyssa': 1
+    'Lyssa': 1,
+    'Slayer': 20,
+    'Slayer_Shot': 1,
+    'Weapon': 1,
+    'Beast': 1,
+    'Enemy_Weapon': 1,
+    'Wall': 64,
+    'Star': 1,
+    'Spider': 1,
+    'Window': 1,
+    'Line': 462,
+    'Fire_Mare': 1,
+    'Castle': 1
 }
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {
     'PlayerScore': 1,
@@ -34,9 +45,9 @@ class Lyssa(GameObject):
         self.rgb = 198, 89, 179
         self.hud = False
 
-class Slayers(GameObject):
+class Slayer(GameObject):
     def __init__(self):
-        super(Slayers, self).__init__()
+        super(Slayer, self).__init__()
         self._xy = 0, 160
         self.wh = (6, 16)
         self.rgb = 45, 109, 152
@@ -222,13 +233,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[2+i] = None
                 if ram_state[99+i] and enemies < ram_state[82] and not (ram_state[73] == 80 and ram_state[91+i] >= 69):
                     enemies += 1
-                    slayer = Slayers()
+                    slayer = Slayer()
                     objects[2+i] = slayer
                     slayer.xy = ram_state[83+i] + 9, (ram_state[91+i]*2) + 15
                 for j in range(3):
                     objects[7+i+j*5] = None
                     if ram_state[99+i]&2**j and objects[2+i] is not None:
-                        slayer2 = Slayers()
+                        slayer2 = Slayer()
                         objects[7+i+j*5] = slayer2
                         slayer2.xy = ram_state[83+i] + 9 + (16 * (ram_state[99+i]&2**j)), (ram_state[91+i]*2) + 15
         else:
@@ -239,13 +250,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for i in range(5):
                 objects[2+i] = None
                 if ram_state[100+i] and ram_state[82] > i:
-                    slayer = Slayers()
+                    slayer = Slayer()
                     objects[2+i] = slayer
                     slayer.xy = ram_state[84+i] + 9, (ram_state[92+i]*2) + 15
                     for j in range(3):
                         objects[7+i+j*5] = None
                         if ram_state[100+i]&2**j:
-                            slayer2 = Slayers()
+                            slayer2 = Slayer()
                             objects[7+i+j*5] = slayer2
                             slayer2.xy = ram_state[84+i] + 9 + (16 * (ram_state[100+i]&2**j)), (ram_state[92+i]*2) + 15
         if ram_state[77]:
@@ -284,26 +295,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         else:
             objects[1] = None
 
-        boss = Beast()
-        objects[2] = boss
-        if ram_state[100] == 157:
-            boss.xy = ram_state[84] + 13, (ram_state[92]*2) + 15
+        lyssa = Lyssa()
+        objects[2] = lyssa
+        if ram_state[109] == 42:
+            lyssa.xy = ram_state[85] + 9, (ram_state[93] * 2) + 15
         else:
-            boss.xy = ram_state[84] + 9, (ram_state[92]*2) + 15
-        
+            lyssa.xy = ram_state[85] + 8, (ram_state[93] * 2) + 15
+        boss = Beast()
+        objects[3] = boss
+        if ram_state[100] == 157:
+            boss.xy = ram_state[84] + 13, (ram_state[92] * 2) + 15
+        else:
+            boss.xy = ram_state[84] + 9, (ram_state[92] * 2) + 15
+
         if ram_state[77] < 83:
             bossw = Enemy_Weapon()
-            objects[3] = bossw
-            bossw.xy = ram_state[79] + 7, (ram_state[77]*2) + 7
+            objects[4] = bossw
+            bossw.xy = ram_state[79] + 7, (ram_state[77] * 2) + 7
         else:
-            objects[3] = None
-
-        lyssa = Lyssa()
-        objects[4] = lyssa
-        if ram_state[109] == 42:
-            lyssa.xy = ram_state[85] + 9, (ram_state[93]*2) + 15
-        else:
-            lyssa.xy = ram_state[85] + 8, (ram_state[93]*2) + 15
+            objects[4] = None
 
         for j in range(4):
             for i in range(8):
