@@ -223,8 +223,16 @@ class GameObject:
         return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
 
     @property
+    def d_center(self):
+        return self.center + (self.dx, self.dy)
+
+    @property
     def bounding_box(self):
         return self._xy[0], self._xy[1], self._xy[0] + self.wh[0], self._xy[1] + self.wh[1]
+
+    @property
+    def d_bounding_box(self):
+        return self.bounding_box + (self.dx, self.dy)
 
     def is_on_top(self, other):
         """
