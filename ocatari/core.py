@@ -8,7 +8,8 @@ from collections import deque
 from ocatari.ram.extract_ram_info import (detect_objects_ram, init_objects,  # noqa: F401
                                           get_max_objects, get_object_state,
                                           get_object_state_size, get_reference_list,
-                                          get_module as get_ram_module)
+                                          get_masked_dqn_state, get_masked_dqn_state2, get_masked_dqn_state3,
+                                          get_module as get_ram_module, get_object_types)
 from ocatari.vision.extract_vision_info import (detect_objects_vision,
                                                 get_module as get_vision_module)
 from ocatari.vision.utils import mark_bb, to_rgba
@@ -143,11 +144,6 @@ class OCAtari(gym.Env):
             self.detect_objects = self._detect_objects_ram
 
             self.feature_attr = feature_attr
-            try:
-                self.feature_size = len(getattr(GameObject(), feature_attr))
-            except Exception as e:
-                raise AttributeError("GameObject does not support this"
-                                     "feature representation.") from e
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
             self.objects_v = init_objects(self.ram_module_name, self.hud)  # noqa
@@ -155,29 +151,38 @@ class OCAtari(gym.Env):
             logger.error("Undefined mode for information extraction")
             exit(1)
         self._objects: list[GameObject] = init_objects(self.ram_module_name, self.hud)
-        self._fill_buffer = lambda *args, **kwargs: None  # noqa: F402
-        self._reset_buffer = lambda *args, **kwargs: None  # noqa: F402
+        self._object_types = get_object_types(self.ram_module_name, self.hud)
         if obs_mode == "dqn":
             if torch_imported:
-                self._fill_buffer = self._fill_buffer_dqn
-                self._reset_buffer = self._reset_buffer_dqn
+                self._get_state = self._get_state_dqn
                 self.observation_space = gym.spaces.Box(0, 255.0, (self.buffer_window_size, 84, 84))
             else:
                 logger.warn("To use the buffer of OCAtari, you need to install torch.")
         elif obs_mode == "ori":
-            self._fill_buffer = self._fill_buffer_ori
-            self._reset_buffer = self._reset_buffer_ori
+            self._get_state = self._get_state_ori
         elif obs_mode == "obj":
             logger.info("Using OBJ State Representation")
+            try:
+                self.feature_size = len(getattr(GameObject(), feature_attr))
+            except Exception as e:
+                raise AttributeError("GameObject does not support this "
+                                     "feature representation.") from e
             if mode == "ram":
                 shape = (self.buffer_window_size, get_object_state_size(self.ram_module_name, self.hud), self.feature_size)
                 self.observation_space = gym.spaces.Box(0, 255.0, shape)
-                self._fill_buffer = self._fill_buffer_obj
-                self._reset_buffer = self._reset_buffer_obj
+                self._get_state = self._get_state_obj
                 self.reference_list = get_reference_list(self.ram_module_name, hud)
             else:
                 logger.error("This obs mode is only available in ram mode")
                 exit(1)
+        elif obs_mode == "masked_dqn":
+            try:
+                self._get_state = getattr(self, f"_get_state_masked_{feature_attr}")
+            except Exception as e:
+                raise AttributeError("Feature representation is not "
+                                     "supported.") from e
+
+            self.observation_space = gym.spaces.Box(0, 255.0, (self.buffer_window_size, 84, 84))
         elif obs_mode is not None:
             logger.error("Undefined mode for observation (obs_mode), has to be one of ['dqn', 'ori', 'obj', None]")
             exit(1)
@@ -211,10 +216,8 @@ class OCAtari(gym.Env):
 
     def _post_step(self, obs):
         self._fill_buffer()
-        if self.obs_mode == "dqn":
-            obs = self.dqn_obs[0]
-        elif self.obs_mode == "obj":
-            obs = np.array(self._state_buffer)
+        if self.obs_mode != "ori":
+            obs = self._get_buffer_as_stack()
         return obs
 
     def _step_impl(self, *args, **kwargs):
@@ -227,23 +230,15 @@ class OCAtari(gym.Env):
         detect_objects_ram(self._objects, self._ale.getRAM(), self.ram_module_name, self.hud)
 
     def _detect_objects_vision(self):
-        detect_objects_vision(self._objects, self._ale.getScreenRGB(), self.vision_module_name, self.hud)
+        detect_objects_vision(self._objects, self.getScreenRGB(), self.vision_module_name, self.hud)
 
     def _detect_objects_both(self):
         detect_objects_ram(self._objects, self._ale.getRAM(), self.ram_module_name, self.hud)
-        detect_objects_vision(self.objects_v, self._ale.getScreenRGB(), self.vision_module_name, self.hud)
+        detect_objects_vision(self.objects_v, self.getScreenRGB(), self.vision_module_name, self.hud)
 
-    def _reset_buffer_dqn(self):
+    def _reset_buffer(self):
         for _ in range(self.buffer_window_size):
-            self._fill_buffer_dqn()
-
-    def _reset_buffer_ori(self):
-        for _ in range(self.buffer_window_size):
-            self._fill_buffer_ori()
-
-    def _reset_buffer_obj(self):
-        for _ in range(self.buffer_window_size):
-            self._fill_buffer_obj()
+            self._fill_buffer()
 
     def reset(self, *args, **kwargs):
         """
@@ -257,25 +252,56 @@ class OCAtari(gym.Env):
         obs = self._post_step(obs)
         return obs, info
 
-    def _fill_buffer_dqn(self):
-        state = cv2.resize(
-            self._ale.getScreenGrayscale(), (84, 84), interpolation=cv2.INTER_AREA,
+    def _get_state_obj(self):
+        return _tensor(
+            get_object_state(self.reference_list, self._objects,
+                             self.feature_attr, self.feature_size),
+            **_tensor_kwargs
         )
-        self._state_buffer.append(_tensor(state, dtype=_uint8
-                                          , **_tensor_kwargs))
 
-    def _fill_buffer_ori(self):
-        state = self._ale.getScreenRGB()
-        self._state_buffer.append(_tensor(state, dtype=_uint8,
-                                          **_tensor_kwargs))
+    def _get_state_ori(self):
+        return _tensor(self.getScreenRGB(), dtype=_uint8, **_tensor_kwargs)
 
-    def _fill_buffer_obj(self):
-        state = get_object_state(self.reference_list, self._objects,
-                                 self.feature_attr, self.feature_size)
-        self._state_buffer.append(state)
+    def _get_state_dqn(self):
+        return _tensor(
+            cv2.resize(self._ale.getScreenGrayscale(),
+                       (84, 84), interpolation=cv2.INTER_AREA),
+            dtype=_uint8,
+            **_tensor_kwargs
+        )
+
+    def _get_state_masked_bin(self):
+        state = get_masked_dqn_state(self._objects)
+        return _tensor(
+            cv2.resize(state,
+                       (84, 84), interpolation=cv2.INTER_AREA),
+            dtype=_uint8,
+            **_tensor_kwargs
+        )
+
+    def _get_state_masked_gray(self):
+        state = get_masked_dqn_state2(self._objects, self._object_types)
+        return _tensor(
+            cv2.resize(state,
+                       (84, 84), interpolation=cv2.INTER_AREA),
+            dtype=_uint8,
+            **_tensor_kwargs
+        )
+
+    def _get_state_masked_ori(self):
+        state = get_masked_dqn_state3(self._objects, self._ale.getScreenGrayscale())
+        return _tensor(
+            cv2.resize(state,
+                       (84, 84), interpolation=cv2.INTER_AREA),
+            dtype=_uint8,
+            **_tensor_kwargs
+        )
+
+    def _fill_buffer(self):
+        self._state_buffer.append(self._get_state())
 
     def _get_buffer_as_stack(self):
-        return _stack(list(self._state_buffer), 0).unsqueeze(0).byte()
+        return _stack(list(self._state_buffer), 0)
 
     window: pygame.Surface = None
     clock: pygame.time.Clock = None
@@ -420,14 +446,14 @@ class OCAtari(gym.Env):
 
         :type: torch.tensor
         """
-        return self._get_buffer_as_stack()
+        return self._get_buffer_as_stack().unsqueeze(0).byte()
 
     @property
     def get_rgb_state(self):
         """
         :type: np.array
         """
-        return self._ale.getScreenRGB()
+        return self.getScreenRGB()
 
     def set_ram(self, target_ram_position, new_value):
         """
@@ -460,10 +486,10 @@ class OCAtari(gym.Env):
         return self._ale.getScreenRGB()
 
     def detect_objects_both(self):
-        import ipdb;
+        import ipdb
         ipdb.set_trace()
         detect_objects_ram(self.objects, self._ale.getRAM, self.ram_module_name, self.hud)
-        detect_objects_vision(self.objects_v, self._ale.getScreenRGB, self.vision_module_name, self.hud)
+        detect_objects_vision(self.objects_v, self.getScreenRGB, self.vision_module_name, self.hud)
 
     def _clone_state(self):
         """
@@ -498,7 +524,7 @@ class OCAtari(gym.Env):
 
         :type: list of GameObjects
         """
-        import ipdb;
+        import ipdb
         ipdb.set_trace()
         return [obj for obj in self._objects if obj]  # filtering out None objects
 

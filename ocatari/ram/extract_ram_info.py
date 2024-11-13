@@ -1,5 +1,7 @@
 import sys
+import numpy as np
 from termcolor import colored
+
 
 def get_module(game_name):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
@@ -16,6 +18,13 @@ def get_module(game_name):
     except AttributeError as e:
         raise NotImplementedError(colored(f"{e.name} not implemented for game: {game_name}", "red"))
     return mod
+
+
+def get_object_types(game_module, hud):
+    if hud:
+        return list(game_module.MAX_NB_OBJECTS_HUD.keys())
+    else:
+        return list(game_module.MAX_NB_OBJECTS.keys())
 
 
 def get_max_objects(game_module, hud):
@@ -66,4 +75,43 @@ def get_object_state(reference_list, objects, feature_attr, num_features):
             idx = temp_ref_list.index(o.category)  # at position of first category occurrence
             state[idx] = getattr(o, feature_attr)  # write the slice
             temp_ref_list[idx] = False  # remove reference from reference list
+    return state
+
+def get_masked_dqn_state(objects):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i][j] = 255
+    return state
+
+
+def get_masked_dqn_state2(objects, object_types):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+            value = 255 * (1 + object_types.index(o.category)) // len(object_types)
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i][j] = value
+    return state
+
+
+def get_masked_dqn_state3(objects, gray_scale_img):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i][j] = gray_scale_img[i][j]
     return state
