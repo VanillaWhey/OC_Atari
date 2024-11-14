@@ -86,7 +86,7 @@ def get_masked_dqn_state(objects):
             if x+w > 0 and y+h > 0:
                 for i in range(max(0, y), min(y+h, 209)):
                     for j in range(max(0, x), min(x+w, 159)):
-                        state[i][j] = 255
+                        state[i, j] = 255
     return state
 
 
@@ -100,7 +100,7 @@ def get_masked_dqn_state2(objects, object_types):
             if x+w > 0 and y+h > 0:
                 for i in range(max(0, y), min(y+h, 209)):
                     for j in range(max(0, x), min(x+w, 159)):
-                        state[i][j] = value
+                        state[i, j] = value
     return state
 
 
@@ -113,5 +113,5 @@ def get_masked_dqn_state3(objects, gray_scale_img):
             if x+w > 0 and y+h > 0:
                 for i in range(max(0, y), min(y+h, 209)):
                     for j in range(max(0, x), min(x+w, 159)):
-                        state[i][j] = gray_scale_img[i][j]
+                        state[i, j] = gray_scale_img[i, j]
     return state
