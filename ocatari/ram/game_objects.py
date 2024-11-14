@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import Tuple
 
-from scripts.specialized.find_appearing_qbert2 import prev_x
-
 
 class Orientation(Enum):  # 16-wind compass directions
     N = 0
