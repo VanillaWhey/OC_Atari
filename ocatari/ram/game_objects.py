@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Tuple
 
+from scripts.specialized.find_appearing_qbert2 import prev_x
+
 
 class Orientation(Enum):  # 16-wind compass directions
     N = 0
@@ -155,15 +157,15 @@ class GameObject:
 
     @property
     def dx(self):
-        return self._xy[0] - self.prev_xy[0]
+        return self.x - self.prev_x
 
     @property
     def dy(self):
-        return self._xy[1] - self.prev_xy[1]
+        return self.y - self.prev_y
 
     @property
     def xywh(self):
-        return self._xy[0], self._xy[1], self.wh[0], self.wh[1]
+        return self.x, self.y, self.w, self.h
 
     @xywh.setter
     def xywh(self, xywh):
@@ -220,19 +222,23 @@ class GameObject:
 
     @property
     def center(self):
-        return self._xy[0] + self.wh[0]/2, self._xy[1] + self.wh[1]/2
+        return self.x + self.w/2, self.y + self.h/2
+
+    @property
+    def dxy(self):
+        return self.dx, self.dy
 
     @property
     def d_center(self):
-        return self.center + (self.dx, self.dy)
+        return self.center + self.dxy
 
     @property
     def bounding_box(self):
-        return self._xy[0], self._xy[1], self._xy[0] + self.wh[0], self._xy[1] + self.wh[1]
+        return self.x, self.y, self.x + self.w, self.y + self.h
 
     @property
     def d_bounding_box(self):
-        return self.bounding_box + (self.dx, self.dy)
+        return self.bounding_box + self.dxy
 
     def is_on_top(self, other):
         """
