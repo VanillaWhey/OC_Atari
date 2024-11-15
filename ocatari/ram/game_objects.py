@@ -192,6 +192,10 @@ class GameObject:
     def d_bounding_box(self):
         return self.bounding_box + self.dxy
 
+    @property
+    def d_xywh(self):
+        return self.xywh + self.dxy
+
     def is_on_top(self, other):
         """
         Returns ``True`` if this and another gameobject overlap.
