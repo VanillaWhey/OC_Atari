@@ -212,7 +212,7 @@ class OCAtari(gym.Env):
         :param action: The action to perform at this step.
         :type action: int
         """
-        raise NotImplementedError()
+        return self._step_impl(action, *args, **kwargs)
 
     def _post_step(self, obs):
         self._fill_buffer()
