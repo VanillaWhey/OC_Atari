@@ -421,7 +421,7 @@ class OCAtari(gym.Env):
                 pygame.event.pump()
 
             elif self.render_mode == "rgb_array":
-                return pygame.surfarray.array3d(self.window)
+                return pygame.surfarray.array3d(self.window).swapaxes(0, 1)
 
     def close(self):
         """
