@@ -4,7 +4,8 @@ import numpy as np
 import gymnasium as gym
 from itertools import chain
 from termcolor import colored
-from ocatari.ram.extract_ram_info import (detect_objects_ram, init_objects, get_max_objects, get_object_state_size, get_class_dict)
+from ocatari.ram.extract_ram_info import (detect_objects_ram, init_objects, get_max_objects, get_object_state_size, get_class_dict,
+                                          get_masked_dqn_bin_state, get_masked_dqn_gray_state, get_masked_dqn_pix_state)
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
 from ocatari.ram.game_objects import GameObject, ValueObject
@@ -129,11 +130,22 @@ class OCAtari:
         # Define observation space based on the observation mode
         if obs_mode == "ori":
             pass
-        elif obs_mode == "dqn":
-            # Set stack for DQN mode (grayscale, 84x84)
+        elif "dqn" in obs_mode:
+            self.obs_mode = "dqn"
             create_buffer_stacks.append("dqn")
             self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size,84,84))
-        elif obs_mode == "obj":
+            if obs_mode == "dqn":
+                # Set stack for DQN mode (grayscale, 84x84)
+                self.get_dqn_state = self._get_state_dqn
+            elif obs_mode in ["masked_dqn", "masked_dqn_bin"]:
+                self.get_dqn_state = self._get_state_masked_bin
+            elif obs_mode in "masked_dqn_grayscale":
+                self.get_dqn_state = self._get_state_masked_gray
+            elif obs_mode in "masked_dqn_pixels":
+                self.get_dqn_state = self._get_state_masked_pix
+            else:
+                raise AttributeError("No valid obs_mode was selected")
+        elif obs_mode == "obj" or "masked_dqn" in obs_mode:
             # Set up object tracking and observation properties
             # Get the maximum number of objects per category for the game
             self.max_objects_per_cat = get_max_objects(self.game_name, self.hud)
@@ -146,8 +158,9 @@ class OCAtari:
             # Store the meaning of each neurosymbolic state representation
             self.ns_meaning = [f"{o.category} ({o._ns_meaning})" for o in self._slots]
             # Create a stack of ns_states (objects, buffer_size x ocss)
-            create_buffer_stacks.append("obj")
-            self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud)))
+            if obs_mode == "obj":
+                create_buffer_stacks.append("obj")
+                self._env.observation_space = gym.spaces.Box(0,255.0,(self.buffer_window_size, get_object_state_size(self.game_name,self.hud)))
         else:
             raise AttributeError("No valid obs_mode was selected")
 
@@ -274,17 +287,34 @@ class OCAtari:
         self.detect_objects()
         # Reset the buffer after environment reset
         self._reset_buffer()
+        # Set the observation based on the selected observation mode
+        if self.obs_mode == "dqn":
+            obs = np.array(self._state_buffer_dqn)
+        elif self.obs_mode == "obj":
+            obs = np.array(self._state_buffer_ns)
         return obs, info
 
     def _fill_buffer(self):
         # Fill the RGB, DQN, and neurosymbolic state buffers with the current states
         if self.create_dqn_stack:
-            dqn_obs = cv2.resize(cv2.cvtColor(self.getScreenRGB(), cv2.COLOR_RGB2GRAY), (84, 84), interpolation=cv2.INTER_AREA)
+            dqn_obs = cv2.resize(self.get_dqn_state(), (84, 84), interpolation=cv2.INTER_AREA)
             self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs) if torch_imported else dqn_obs)
         if self.create_rgb_stack:
             self._state_buffer_rgb.append(self.getScreenRGB())
         if self.create_ns_stack:
             self._state_buffer_ns.append(self.ns_state)
+
+    def _get_state_dqn(self):
+        return cv2.cvtColor(self.getScreenRGB(), cv2.COLOR_RGB2GRAY)
+
+    def _get_state_masked_bin(self):
+        return get_masked_dqn_bin_state(self.objects)
+
+    def _get_state_masked_gray(self):
+        return get_masked_dqn_gray_state(self.objects, self._class_dict)
+
+    def _get_state_masked_pix(self):
+        return get_masked_dqn_pix_state(self.objects, self._ale.getScreenGrayscale())
 
     window: pygame.Surface = None
     clock: pygame.time.Clock = None

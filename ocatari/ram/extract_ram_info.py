@@ -150,3 +150,42 @@ def get_object_state(reference_list, objects, game_name):
             return state
         except AssertionError as err:
             raise err
+
+def get_masked_dqn_bin_state(objects):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i, j] = 255
+    return state
+
+
+def get_masked_dqn_gray_state(objects, object_types):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+            value = 255 * (1 + object_types.index(o.category)) // len(object_types)
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i, j] = value
+    return state
+
+
+def get_masked_dqn_pix_state(objects, gray_scale_img):
+    state = np.zeros((210, 160))
+    for o in objects:
+        if o is not None:
+            x,y,w,h = o.xywh
+
+            if x+w > 0 and y+h > 0:
+                for i in range(max(0, y), min(y+h, 209)):
+                    for j in range(max(0, x), min(x+w, 159)):
+                        state[i, j] = gray_scale_img[i, j]
+    return state
