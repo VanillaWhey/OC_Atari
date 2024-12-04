@@ -25,28 +25,6 @@ try:
 except ModuleNotFoundError:
     print('\nOpenCV is required when using the ALE env wrapper. Try `pip install opencv-python`.')
 
-
-try:
-    import torch  # PyTorch is used for efficient tensor operations if available
-    torch_imported = True
-    _tensor = torch.tensor
-    _uint8 = torch.uint8
-    _zeros = torch.zeros
-    _zeros_like = torch.zeros_like
-    _stack = torch.stack
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-    _tensor_kwargs = {"device": DEVICE}
-except ModuleNotFoundError:
-    torch_imported = False
-    _tensor = np.array
-    _uint8 = np.uint8
-    _zeros = np.zeros
-    _zeros_like = np.zeros_like
-    _stack = np.stack
-    DEVICE = "cpu"
-    _tensor_kwargs = {}
-    warnings.warn("pytorch installation not found, using numpy instead of torch")
-
 try:
     import pygame  # Pygame is required for rendering the environment for human visualization
 except ModuleNotFoundError:
@@ -68,7 +46,7 @@ OBJv2_SUPPORTED = [
 ]
 
 # Constant to control the upscaling factor for rendering
-UPSCALE_FACTOR = 3
+UPSCALE_FACTOR = 5
 
 
 # The OCAtari environment provides an interface to interact with Atari 2600 games through Gymnasium, enabling object tracking and analysis. This environment extends the functionality of traditional Atari environments by incorporating different object detection modes (RAM, vision, or both) and supports enhanced observation spaces for advanced tasks like reinforcement learning.  
@@ -125,7 +103,6 @@ class OCAtari:
             self._env = gym.make(cenv_name, render_mode=gym_render_mode, *args, **kwargs)
             warnings.warn(colored(f'Game "{env_name}" not found in gymnasium, automatically using "{cenv_name}" instead', "red"))
             self.env_name = cenv_name
-
 
         # Define observation space based on the observation mode
         if obs_mode == "ori":
@@ -298,7 +275,7 @@ class OCAtari:
         # Fill the RGB, DQN, and neurosymbolic state buffers with the current states
         if self.create_dqn_stack:
             dqn_obs = cv2.resize(self.get_dqn_state(), (84, 84), interpolation=cv2.INTER_AREA)
-            self._state_buffer_dqn.append(_tensor(dqn_obs, dtype=_uint8, **_tensor_kwargs) if torch_imported else dqn_obs)
+            self._state_buffer_dqn.append(dqn_obs)
         if self.create_rgb_stack:
             self._state_buffer_rgb.append(self.getScreenRGB())
         if self.create_ns_stack:
@@ -475,11 +452,11 @@ class OCAtari:
 
     def render_explanations(self):
         # Render explanations by highlighting the objects with bounding boxes
+        rendered = np.zeros_like(self._state_buffer_rgb[0]).astype(float)
         coefs = [0.05, 0.1, 0.25, 0.6]
-        rendered = _zeros_like(self._state_buffer_rgb[0]).float()
         for coef, state_i in zip(coefs, self._state_buffer_rgb):
             rendered += coef * state_i
-        rendered = rendered.cpu().detach().to(int).numpy()
+        rendered = rendered.astype(int)
         for obj in self.objects:
             mark_bb(rendered, obj.xywh, color=obj.rgb)
         import matplotlib.pyplot as plt
@@ -498,8 +475,8 @@ class OCAtari:
 
     def aggregated_render(self, coefs=[0.05, 0.1, 0.25, 0.6]):
         # Generate a weighted sum of frames for a more informative representation
-        rendered = _zeros_like(self._state_buffer_rgb[0]).float()
+        rendered = np.zeros_like(self._state_buffer_rgb[0]).astype(float)
         for coef, state_i in zip(coefs, self._state_buffer_rgb):
             rendered += coef * state_i
-        rendered = rendered.cpu().detach().to(int).numpy()
+        rendered = rendered.astype(int)
         return rendered

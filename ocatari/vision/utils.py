@@ -130,7 +130,7 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
 def plot_bounding_boxes(obs, bbs, objects_colors):
     for bb in bbs:
         try:
-            mark_bb(obs, bb, np.array([cv for cv in objects_colors[bb[5]]]))
+            mark_bb(obs, bb, objects_colors)
         except KeyError as err:
             print(err)
             mark_bb(obs, bb, np.array([255, 255, 255]))
@@ -282,7 +282,54 @@ def find_objects(image, color, size=None, tol_s=10,
     return detected
 
 
-def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
+def find_exact_bounding_boxes(image, color, minx, maxx, miny, maxy):
+    # Create a mask for the specified color range
+    # mask = cv2.inRange(image[miny:maxy, minx:maxx, :], np.array(color), np.array(color))
+    binary_image = cv2.inRange(image, np.array(color), np.array(color))
+    height, width = binary_image.shape
+    rectangles = []
+
+    # Create a visited grid to avoid redundant checks
+    visited = np.zeros_like(binary_image, dtype=bool)
+
+    # Scan the grid row by row and column by column
+    for y in range(height):
+        for x in range(width):
+            # If the pixel is part of a wall and not visited
+            if binary_image[y, x] == 255 and not visited[y, x]:
+                # Start constructing a rectangle
+                x_start, y_start = x, y
+
+                # Expand horizontally until the wall ends or boundary
+                x_end = x
+                while x_end < width and binary_image[y, x_end] == 255 and not visited[y, x_end]:
+                    x_end += 1
+                x_end -= 1
+
+                # Expand vertically from the current horizontal line
+                y_end = y
+                valid = True
+                while y_end < height and valid:
+                    for x_scan in range(x_start, x_end + 1):
+                        if binary_image[y_end, x_scan] != 255 or visited[y_end, x_scan]:
+                            valid = False
+                            break
+                    if valid:
+                        y_end += 1
+                y_end -= 1
+
+                # Mark the rectangle area as visited
+                for yy in range(y_start, y_end + 1):
+                    for xx in range(x_start, x_end + 1):
+                        visited[yy, xx] = True
+
+                # Add the rectangle (x1, y1, w, h) to the list
+                rectangles.append((x_start, y_start, x_end-x_start+1, y_end-y_start+1))
+
+    return rectangles
+
+
+def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
                     min_distance=10, closing_active=True, closing_dist=3,
                     minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
     """
@@ -467,7 +514,7 @@ def find_rectangle_objects(image, color, max_size=None, minx=0, miny=0, maxx=160
 
 def _find_rectangles_in_bb(mask, bb, size, minx, miny):
     bounding_boxes = list()
-    (offx,offy) = size
+    (offx, offy) = size
     (x,y,w,h) = bb
     mask = mask[y:y + h, x:x + w]
     # np.array_equal(mask[i + a, j + b], black), when image instead of mask
@@ -629,8 +676,9 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     if len(objects_bb) > max_obj:
         print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-         for i, obj_bb in enumerate(objects_bb):
-            prev_objects[start_idx+i] = ObjClass(*obj_bb)
+        # for i, obj_bb in enumerate(objects_bb):
+        for i in range(min(max_obj, len(objects_bb))):
+            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
@@ -649,16 +697,24 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
             print(e)
             import ipdb; ipdb.set_trace()
 
-def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
+def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
     """
     Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
     """
 
     if len(objects_bb) > max_obj:
         print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+        # img2 = img.copy()
+        # for (x, y, w, h) in objects_bb:
+        #     img[y:y+h, x:x+w] = 255, 255, 255
+        # import matplotlib.pyplot as plt
+        # plt.imshow(img)
+        # plt.show()
+        # plt.imshow(img2)
+        # plt.show()
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-         for i, obj_bb in enumerate(objects_bb):
-            prev_objects[start_idx+i] = ObjClass(*obj_bb)
+         for i in range(min(max_obj, len(objects_bb))):
+            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
             prev_objects[start_idx+i].num_frames_invisible += 1
     else:
         try:
@@ -682,7 +738,7 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
                 if i not in obj_idx and prev_objects[start_idx+i]:
                     prev_objects[start_idx+i] = NoObject()
             for i, j in zip(obj_idx, bbs_idx):
-                if prev_objects[start_idx+i]:   
+                if prev_objects[start_idx+i]:
                     prev_objects[start_idx+i].xywh = objects_bb[j][:4]
                     if objects_bb[j] in visible_objects:
                         prev_objects[start_idx+i].num_frames_invisible = 0
