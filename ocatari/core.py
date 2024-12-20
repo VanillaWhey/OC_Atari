@@ -2,16 +2,16 @@ from collections import deque
 import numpy as np
 import gymnasium as gym
 from itertools import chain
-from termcolor import colored
 from ocatari.ram.extract_ram_info import (
-    detect_objects_ram, init_objects, get_max_objects, get_object_state_size, get_class_dict)
+    detect_objects_ram, get_max_objects, get_object_state_size,
+    get_class_dict, init_objects, get_masked_dqn_gray_state,
+    get_masked_dqn_bin_state, get_masked_dqn_pix_state
+)
 from ocatari.vision.extract_vision_info import detect_objects_vision
 from ocatari.vision.utils import mark_bb, to_rgba
-from ocatari.ram.game_objects import GameObject, ValueObject
-from ocatari.vision.game_objects import GameObject as GameObjectVision
+from ocatari.ram.game_objects import ValueObject
 from ocatari.utils import draw_label, draw_arrow
 from gymnasium.error import NameNotFound
-import warnings
 
 try:
     # ALE (Arcade Learning Environment) is required for running Atari environments.
