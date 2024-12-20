@@ -3,8 +3,6 @@ import numpy as np
 import gymnasium as gym
 from itertools import chain
 from termcolor import colored
-from ocatari.ram.extract_ram_info import (detect_objects_ram, init_objects, get_max_objects, get_object_state_size, get_class_dict,
-                                          get_masked_dqn_bin_state, get_masked_dqn_gray_state, get_masked_dqn_pix_state)
 from ocatari.ram.extract_ram_info import (
     detect_objects_ram, init_objects, get_max_objects, get_object_state_size, get_class_dict)
 from ocatari.vision.extract_vision_info import detect_objects_vision
@@ -43,8 +41,8 @@ AVAILABLE_GAMES = [
     "DemonAttack", "DonkeyKong", "DoubleDunk", "Enduro", "FishingDerby", "Freeway", "Frogger", "Frostbite", "Galaxian",
     "Gopher", "Hero", "IceHockey", "Jamesbond", "Kangaroo", "KeystoneKapers", "KingKong", "Krull", "KungFuMaster",
     "MarioBros", "MontezumaRevenge", "MsPacman", "NameThisGame", "Pacman", "Phoenix", "Pitfall", "Pong", "Pooyan",
-    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner", "Tennis",
-    "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
+    "PrivateEye", "Qbert", "Riverraid", "RoadRunner", "Seaquest", "Skiing", "SpaceInvaders", "StarGunner",
+    "Tennis", "TimePilot", "UpNDown", "Venture", "VideoPinball", "YarsRevenge", "Zaxxon"
 ]
 
 # Constant to control the upscaling factor for rendering
