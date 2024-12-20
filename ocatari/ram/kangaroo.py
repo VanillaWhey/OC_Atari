@@ -12,22 +12,32 @@ RAM extraction for the game KANGAROO. Supported modes: ram.
 MAX_ESSENTIAL_OBJECTS = {
     'Player': 1,
     'Child': 1,
-    'Fruit': 3,
-    'Bell': 1,
-    'Platform': 20,
-    'Ladder': 6,
     'Monkey': 4,
     'FallingCoconut': 1,
     'ThrownCoconut': 3,
-    'Lives': 1,
-    'Time': 1,
+    'Fruit': 3,
+    'Bell': 1,
+    'Ladder': 6,
+    'Platform': 20,
 }
 
 MAX_OPTIONAL_OBJECTS = {
+    'Player': 1,
+    'Child': 1,
+    'Monkey': 4,
+    'FallingCoconut': 1,
+    'ThrownCoconut': 3,
+    'Fruit': 3,
+    'Bell': 1,
+    'Ladder': 6,
+    'Platform': 20,
+    'Lives': 1,
+    'Time': 1,
     'Score': 1
 }
 
-MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()|MAX_OPTIONAL_OBJECTS.items())
+MAX_ALL_OBJECTS = dict(MAX_ESSENTIAL_OBJECTS.items()
+                       | MAX_OPTIONAL_OBJECTS.items())
 
 MAX_NB_OBJECTS = MAX_ESSENTIAL_OBJECTS
 MAX_NB_OBJECTS_HUD = MAX_ALL_OBJECTS
@@ -179,7 +189,7 @@ class Lives(GameObject):
         self._xy = 16, 183
         self.wh = 4, 7
         self.rgb = 160, 171, 79
-        self.hud = False
+        self.hud = True
         self.value = 0
 
 
@@ -193,7 +203,7 @@ class Time(ValueObject):
         self._xy = 80, 191
         self.wh = 15, 5
         self.rgb = 160, 171, 79
-        self.hud = False
+        self.hud = True
         self.value = 20
 
 
@@ -221,7 +231,6 @@ def _get_max_objects(hud=False):
 #     return all_objects
 
 
-
 def _init_objects_ram(hud=True):
     """
     (Re)Initialize the objects
@@ -229,9 +238,10 @@ def _init_objects_ram(hud=True):
     # objects = [Player(), Child(), Monkey(), Monkey(), Monkey(), Monkey(),
     #            FallingCoconut(), ThrownCoconut(), ThrownCoconut(), ThrownCoconut(), Fruit(), Fruit(), Fruit(), Bell(),
     #            Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects = [Player(), Child()] + [NoObject()] * 11 + [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
-    objects.extend([NoObject()]* 26)
-    if hud: 
+    objects = [Player(), Child()] + [NoObject()] * 11 + \
+        [Bell(), Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    objects.extend([NoObject()] * 26)
+    if hud:
         objects.extend([Score(), Time(), Lives()])
     return objects
 
@@ -243,7 +253,8 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     x = ram_state[17] + 15
     y = ram_state[16] * 8 + 4
 
-    orientation = Orientation.E if ram_state[18] in [8, 9, 28, 73, 74] else Orientation.W
+    orientation = Orientation.E if ram_state[18] in [
+        8, 9, 28, 73, 74] else Orientation.W
     climbing = ram_state[18] in [39, 47]
     crashed = ram_state[54] in [1, 128]
 
@@ -270,11 +281,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     else:
         fruits = 0
         for i in range(3):
-            if ram_state[42+i]&128:
-                fruits +=1
+            if ram_state[42+i] & 128:
+                fruits += 1
         if fruits == 0:
             fruits = 1
-        if ram_state[68] == fruits:         
+        if ram_state[68] == fruits:
             child.xy = ram_state[83] + 15, 12
 
     for i in range(MAX_ESSENTIAL_OBJECTS["Monkey"]):
@@ -310,7 +321,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             objects[7+i] = NoObject()
 
-
     for i in range(MAX_ESSENTIAL_OBJECTS["Fruit"]):
         properties = _get_fruit_properties(ram_state[42 + i])
         if properties is not None:
@@ -333,7 +343,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         else:
             objects[10+i] = NoObject()
 
-
     # bell
     lvl = ram_state[36]
     if ram_state[41] == 128:
@@ -347,23 +356,18 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
     # Only on level change
     current_level = ram_state[36]
-    if type(objects[17]) is NoObject \
-        or (current_level == 0 and objects[17].xy[1] != 76) \
-        or (current_level == 1 and objects[17].xy[1] != 124) \
-        or (current_level == 2 and objects[17].xy[1] != 140):
-        platform = manage_platforms(current_level, objects)
-        for i in range(26):
-            if platform[i]:
-                objects[14+i] = platform[i]
-            else:
-                objects[14+i] = NoObject()
-
+    platform = manage_platforms(current_level, objects)
+    for i in range(26):
+        if platform[i]:
+            objects[14+i] = platform[i]
+        else:
+            objects[14+i] = NoObject()
 
     if hud:
 
         # score
         score_value = _convert_number(ram_state[39]) * 10000 + \
-                    _convert_number(ram_state[40]) * 100
+            _convert_number(ram_state[40]) * 100
 
         if score_value < 100:
             x = 129
@@ -405,11 +409,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[-1] = NoObject()
 
 
-
 def _detect_objects_kangaroo_raw(info, ram_state):
     # for proper y coordinates you will have to multiply by 8
     # if the coordinates equal 255 they are not visible on screen
-    info["ram_slice"] = ram_state[0:18] + ram_state[25], ram_state[28], ram_state[33:35], ram_state[83]
+    info["ram_slice"] = ram_state[0:18] + \
+        ram_state[25], ram_state[28], ram_state[33:35], ram_state[83]
 
 
 def _get_fruit_properties(ram_value):
@@ -430,30 +434,32 @@ def _get_fruit_properties(ram_value):
 
 
 def manage_platforms(current_lvl_val, _):
-    platforms = [Platform(16, 172, w=128), Platform(16, 28, w=128)]
+    platforms = []
 
     # There is a total of 3 levels
     if current_lvl_val == 0:
-        platforms.extend([
+        platforms = [
             Ladder(132, 132),
             Ladder(20, 85),
             Ladder(132, 37),
             NoObject(),
             NoObject(),
             NoObject(),
+            Platform(16, 172, w=128), Platform(16, 28, w=128),
             Platform(16, 76, w=128),
             Platform(16, 124, w=128),
-        ])
+        ]
         platforms.extend([NoObject()]*16)
 
     elif current_lvl_val == 1:
-        platforms.extend([
+        platforms = [
             Ladder(120, 132, h=4),
             Ladder(24, 116, h=4),
             Ladder(128, 36, h=4),
             NoObject(),
             NoObject(),
             NoObject(),
+            Platform(16, 172, w=128), Platform(16, 28, w=128),
             Platform(16, 124, w=28), Platform(52, 124, w=92),
             Platform(16, 76, w=60), Platform(84, 76, w=60),
             Platform(28, 164, w=24), Platform(112, 84, w=24),
@@ -462,22 +468,30 @@ def manage_platforms(current_lvl_val, _):
             Platform(16, 108, w=32), Platform(56, 100, w=20),
             Platform(84, 92, w=20), Platform(64, 60, w=20),
             Platform(92, 52, w=20), Platform(28, 68, w=28)
-        ])
-        platforms.extend([NoObject()]*10)
+        ]
+        platforms.extend([NoObject()]*2)
 
     else:  # current_lvl_val == 2
-        platforms.extend([
+        platforms = [
             Ladder(20, 36, h=28),
             Ladder(20, 148, h=4),
             Ladder(36, 116, h=20),
             Ladder(104, 36, h=20),
             Ladder(120, 68, h=4),
-            Ladder(132, 84, h=4),
-            Platform(88, 140, w=16), Platform(64, 148, w=16), Platform(100, 116, w=16),
-            Platform(48, 100, w=16), Platform(76, 52, w=16), Platform(80, 36, w=16),
-            Platform(104, 132, w=20), Platform(84, 156, w=20), Platform(124, 124, w=20),
-            Platform(52, 84, w=20), Platform(108, 164, w=36), Platform(16, 108, w=80),
-            Platform(16, 92, w=28), Platform(76, 92, w=68), Platform(16, 140, w=32),
-            Platform(96, 60, w=36), Platform(100, 76, w=44), Platform(60, 44, w=12)
-        ])
+            Ladder(132, 84, h=4), Platform(
+                16, 172, w=128), Platform(16, 28, w=128),
+            Platform(88, 140, w=16), Platform(
+                64, 148, w=16), Platform(100, 116, w=16),
+            Platform(48, 100, w=16), Platform(
+                76, 52, w=16), Platform(80, 36, w=16),
+            Platform(104, 132, w=20), Platform(
+                84, 156, w=20), Platform(124, 124, w=20),
+            Platform(52, 84, w=20), Platform(
+                108, 164, w=36), Platform(16, 108, w=80),
+            Platform(16, 92, w=28), Platform(
+                76, 92, w=68), Platform(16, 140, w=32),
+            Platform(96, 60, w=36), Platform(
+                100, 76, w=44), Platform(60, 44, w=12)
+        ]
+
     return platforms

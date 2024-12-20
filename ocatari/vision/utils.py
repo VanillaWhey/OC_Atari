@@ -7,6 +7,7 @@ from termcolor import colored
 from collections import Counter
 from scipy.optimize import linear_sum_assignment
 from .game_objects import NoObject
+import warnings
 
 
 def most_common_color(image, exclude_black=True):
@@ -124,7 +125,6 @@ def mark_bb(image_array, bb, color=(255, 0, 0), surround=True):
         image_array[bottom, x:right + 1] = color
     except IndexError:
         pass
-        # import ipdb; ipdb.set_trace()
 
 
 def plot_bounding_boxes(obs, bbs, objects_colors):
@@ -132,7 +132,7 @@ def plot_bounding_boxes(obs, bbs, objects_colors):
         try:
             mark_bb(obs, bb, objects_colors)
         except KeyError as err:
-            print(err)
+            raise(err)
             mark_bb(obs, bb, np.array([255, 255, 255]))
 
 
@@ -288,7 +288,7 @@ def find_exact_bounding_boxes(image, color, minx, maxx, miny, maxy):
     binary_image = cv2.inRange(image, np.array(color), np.array(color))
     height, width = binary_image.shape
     rectangles = []
-
+    
     # Create a visited grid to avoid redundant checks
     visited = np.zeros_like(binary_image, dtype=bool)
 
@@ -299,13 +299,13 @@ def find_exact_bounding_boxes(image, color, minx, maxx, miny, maxy):
             if binary_image[y, x] == 255 and not visited[y, x]:
                 # Start constructing a rectangle
                 x_start, y_start = x, y
-
+                
                 # Expand horizontally until the wall ends or boundary
                 x_end = x
                 while x_end < width and binary_image[y, x_end] == 255 and not visited[y, x_end]:
                     x_end += 1
                 x_end -= 1
-
+                
                 # Expand vertically from the current horizontal line
                 y_end = y
                 valid = True
@@ -317,19 +317,19 @@ def find_exact_bounding_boxes(image, color, minx, maxx, miny, maxy):
                     if valid:
                         y_end += 1
                 y_end -= 1
-
+                
                 # Mark the rectangle area as visited
                 for yy in range(y_start, y_end + 1):
                     for xx in range(x_start, x_end + 1):
                         visited[yy, xx] = True
-
+                
                 # Add the rectangle (x1, y1, w, h) to the list
                 rectangles.append((x_start, y_start, x_end-x_start+1, y_end-y_start+1))
-
+    
     return rectangles
 
 
-def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2,
+def find_mc_objects(image, colors, size=None, tol_s=10, position=None, tol_p=2, 
                     min_distance=10, closing_active=True, closing_dist=3,
                     minx=0, miny=0, maxx=160, maxy=210, all_colors=True):
     """
@@ -538,7 +538,7 @@ def _find_rectangles_in_bb(mask, bb, size, minx, miny):
                                 rect = False
                                 break
                         except IndexError:
-                            import ipdb; ipdb.set_trace()
+                            raise IndexError
                     if not rect:
                         break
 
@@ -643,7 +643,7 @@ def make_darker(color, col_precent=0.8):
     :rtype: (int, int, int)
     """
     if not color:
-        print("No color passed, using default black")
+        warnings.warn("No color passed, using default black")
         return [0, 0, 0]
     return [int(col * col_precent) for col in color]
 
@@ -674,11 +674,14 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
     #     class_hug_match(prev_objects[start_idx: max_obj], objects[start_idx: max_obj])
     #     start_idx += max_obj
     if len(objects_bb) > max_obj:
-        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+        raise ValueError(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
         # for i, obj_bb in enumerate(objects_bb):
         for i in range(min(max_obj, len(objects_bb))):
-            prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            try:
+                prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
+            except IndexError:
+                raise IndexError
     else:
         try:
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
@@ -694,16 +697,14 @@ def match_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass):
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
         except Exception as e:
-            print(e)
-            import ipdb; ipdb.set_trace()
+            raise(e)
 
 def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClass, img=None):
     """
     Acts like match_objects, but keeps tracking objects when dissapear for a couple of frames.
     """
-
     if len(objects_bb) > max_obj:
-        print(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
+        raise ValueError(f"Number of detected objects ({len(objects_bb)}) exceeds the maximum number of objects ({max_obj}) allowed for {ObjClass}")
         # img2 = img.copy()
         # for (x, y, w, h) in objects_bb:
         #     img[y:y+h, x:x+w] = 255, 255, 255
@@ -712,17 +713,25 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
         # plt.show()
         # plt.imshow(img2)
         # plt.show()
+    if not objects_bb:
+        for i in range(max_obj):
+            curr_obj = prev_objects[start_idx+i]
+            if curr_obj:
+                curr_obj.num_frames_invisible += 1
+                if curr_obj.num_frames_invisible > curr_obj.max_frames_invisible:
+                    prev_objects[start_idx+i] = NoObject()
+        return
     if all([not(obj) for obj in prev_objects[start_idx: start_idx+max_obj]]): # no existing objects
-         for i in range(min(max_obj, len(objects_bb))):
+        for i in range(min(max_obj, len(objects_bb))):
             prev_objects[start_idx+i] = ObjClass(*objects_bb[i])
             prev_objects[start_idx+i].num_frames_invisible += 1
     else:
-        try:
+        # try:
             visible_objects = [o for o in objects_bb]
             for o in prev_objects[start_idx: start_idx+max_obj]:
-                if o == NoObject():
+                if not o:
                     continue
-                if o.num_frames_invisible in range(o.max_frames_invisible):
+                elif o.num_frames_invisible < o.max_frames_invisible:
                     X = compute_cm([o], objects_bb)
                     flag = False
                     if np.shape(X) == (1, 0):
@@ -735,10 +744,11 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
             cost_matrix = compute_cm(prev_objects[start_idx: start_idx+max_obj], objects_bb)
             obj_idx, bbs_idx = linear_sum_assignment(cost_matrix)
             for i in range(max_obj):
-                if i not in obj_idx and prev_objects[start_idx+i]:
+                o = prev_objects[start_idx+i]
+                if i not in obj_idx and o and o.max_frames_invisible <= o.num_frames_invisible:
                     prev_objects[start_idx+i] = NoObject()
             for i, j in zip(obj_idx, bbs_idx):
-                if prev_objects[start_idx+i]:
+                if prev_objects[start_idx+i]:   
                     prev_objects[start_idx+i].xywh = objects_bb[j][:4]
                     if objects_bb[j] in visible_objects:
                         prev_objects[start_idx+i].num_frames_invisible = 0
@@ -747,6 +757,3 @@ def match_blinking_objects(prev_objects, objects_bb, start_idx, max_obj, ObjClas
                 else:
                     prev_objects[start_idx+i] = ObjClass(*objects_bb[j])
                     prev_objects[start_idx+i].num_frames_invisible += 1
-        except Exception as e:
-            print(e)
-            import ipdb; ipdb.set_trace()
