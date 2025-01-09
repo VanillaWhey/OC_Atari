@@ -103,6 +103,10 @@ class OCAtari:
                 cenv_name, render_mode=gym_render_mode, *args, **kwargs)
             self.env_name = cenv_name
 
+        # Init function to get DQN states for buffer
+        if "dqn" in create_buffer_stacks:
+            self.get_dqn_state = self._get_state_dqn
+
         # Define observation space based on the observation mode
         if obs_mode == "ori":
             pass
@@ -117,11 +121,12 @@ class OCAtari:
                 self.get_dqn_state = self._get_state_masked_bin
             elif obs_mode in "masked_dqn_grayscale":
                 self.get_dqn_state = self._get_state_masked_gray
+                self._classes = list(dict.fromkeys(get_class_dict(self.game_name)))
             elif obs_mode in "masked_dqn_pixels":
                 self.get_dqn_state = self._get_state_masked_pix
             else:
                 raise AttributeError("No valid obs_mode was selected")
-        elif obs_mode == "obj" or "masked_dqn" in obs_mode:
+        elif obs_mode == "obj":
             # Set up object tracking and observation properties
             # Get the maximum number of objects per category for the game
             self.max_objects_per_cat = get_max_objects(
@@ -138,10 +143,9 @@ class OCAtari:
             self.ns_meaning = [
                 f"{o.category} ({o._ns_meaning})" for o in self._slots]
             # Create a stack of ns_states (objects, buffer_size x ocss)
-            if obs_mode == "obj":
-                create_buffer_stacks.append("obj")
-                self._env.observation_space = gym.spaces.Box(
-                    0, 255.0, (self.buffer_window_size, get_object_state_size(self.game_name, self.hud)))
+            create_buffer_stacks.append("obj")
+            self._env.observation_space = gym.spaces.Box(
+                0, 255.0, (self.buffer_window_size, get_object_state_size(self.game_name, self.hud)))
         else:
             raise AttributeError("No valid obs_mode was selected")
 
@@ -296,7 +300,7 @@ class OCAtari:
         return get_masked_dqn_bin_state(self.objects)
 
     def _get_state_masked_gray(self):
-        return get_masked_dqn_gray_state(self.objects, self._class_dict)
+        return get_masked_dqn_gray_state(self.objects, self._classes)
 
     def _get_state_masked_pix(self):
         return get_masked_dqn_pix_state(self.objects, self._ale.getScreenGrayscale())
