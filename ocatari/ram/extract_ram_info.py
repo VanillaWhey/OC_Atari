@@ -163,7 +163,7 @@ def get_masked_dqn_bin_state(objects):
 def get_masked_dqn_gray_state(objects, object_types):
     state = np.zeros((210, 160))
     for o in objects:
-        if o is not None:
+        if not (o is None or o.category == "NoObject"):
             x,y,w,h = o.xywh
             value = 255 * (1 + object_types.index(o.category)) // len(object_types)
 
