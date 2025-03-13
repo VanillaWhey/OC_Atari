@@ -1,11 +1,10 @@
-from .game_objects import GameObject, ValueObject
+from .game_objects import GameObject, ValueObject, NoObject
 from ._helper_methods import _convert_number
 import sys
 
-MAX_NB_OBJECTS = {"Player": 1, "Player_Projectile": 1, "Phoenix": 8, "Bat": 7,
-                  "Boss": 1, "Boss_Block_Green": 2, "Boss_Block_Blue": 48, "Boss_Block_Red": 104}
-MAX_NB_OBJECTS_HUD = {"Player": 1, "Player_Projectile": 1, "Phoenix": 8, "Bat": 7, "Boss": 1,
-                      "Boss_Block_Green": 2, "Boss_Block_Blue": 48, "Boss_Block_Red": 104, "Score": 1, "Life": 5}
+MAX_NB_OBJECTS = {"Player": 1, "Player_Projectile": 1, "Phoenix": 8, "Bat": 7, "Enemy_Projectile": 4,
+                  "Boss": 1, "Boss_Block_Green": 2, "Boss_Block_Blue": 48, "Boss_Block_Red": 112}
+MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {"Score": 1, "Life": 5}
 
 
 class Player(GameObject):
@@ -179,11 +178,11 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([None] * 168)
+    objects.extend([NoObject()] * 167)
 
     if hud:
         objects.extend([Score()])
-        objects.extend([None] * 5)
+        objects.extend([NoObject()] * 5)
     return objects
 
 
@@ -200,12 +199,19 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # ram[94] == player_x
     objects[0].xy = ram_state[94] - 70, 173
 
-    if not ram_state[84]:
+    if ram_state[49]:
+        objects[0].wh = (12, 12)
+    else:
+        objects[0].wh = (7, 10)
+
+    if ram_state[89] < 193:
         objects[1] = Player_Projectile()
         objects[1].xy = ram_state[93] - 71, 201 - ram_state[89]
+    else:
+        objects[1] = NoObject()
 
     for i in range(4):
-        if ram_state[58+i] < 250:
+        if ram_state[53+i] > 4:
             left = ram_state[80+i] >> 4
             right = ram_state[80+i] & 15
             if left & 8:
@@ -214,9 +220,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 x = 5 + (right-3) * 15 - left
 
             objects[2+i] = Enemy_Projectile()
-            objects[2+i].xy = x, 189 - ram_state[58+i]
+            objects[2+i].xy = x, 195 - ram_state[53+i]
         else:
-            objects[2+i] = None
+            objects[2+i] = NoObject()
 
     if ram_state[11]:
         # ram[99-106] == enemy_x
@@ -232,7 +238,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             for i in range(4):
                 # left side enemies
                 if ram_state[27+i] & 6 == 6:
-                    enemy = None
+                    enemy = NoObject()
                 else:
                     enemy = Phoenix()
                     enemy.rgb = rgb
@@ -241,14 +247,14 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
                 # right side enemies
                 if ram_state[34+i] & 6 == 6:
-                    enemy2 = None
+                    enemy2 = NoObject()
                 else:
                     enemy2 = Phoenix()
                     enemy2.rgb = rgb
                     enemy2.xy = ram_state[103+i] - 70, 204 - ram_state[41+i]
 
-                objects[5+i] = enemy
-                objects[9+i] = enemy2
+                objects[6+i] = enemy
+                objects[10+i] = enemy2
         else:
             # ram[27-33] == left wing, ram[34-40] == right wing
             if ram_state[27] & 32:
@@ -298,24 +304,24 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                     bat.xy = x, 201 - ram_state[41+i]
                     bat.wh = w, h
                     bat.rgb = rgb
-                    objects[5+i] = bat
+                    objects[6+i] = bat
 
                 else:
-                    objects[5+i] = None
-            objects[12] = None
-        for i in range(13, 169):
-            objects[i] = None
+                    objects[6+i] = NoObject()
+            objects[13] = NoObject()
+        for i in range(14, 169):
+            objects[i] = NoObject()
     else:
         # boss -> ram[33-46] == red blocks, ram[27-32] == blue blocks (moving one block every time)
         # ram[95] == boss_y
-        objects[5] = Boss()
-        objects[5].xy = 76, 198 - ram_state[95]
+        objects[6] = Boss()
+        objects[6].xy = 76, 198 - ram_state[95]
 
         # indestructable blocks, simple implementation
-        objects[6] = Boss_Block_Green()
-        objects[6].xy = 56, 199 - ram_state[95]
         objects[7] = Boss_Block_Green()
-        objects[7].xy = 84, 199 - ram_state[95]
+        objects[7].xy = 56, 199 - ram_state[95]
+        objects[8] = Boss_Block_Green()
+        objects[8].xy = 84, 199 - ram_state[95]
 
         # Outer blocks of first 2 blue rows
         left1 = ram_state[27] >> 4
@@ -324,44 +330,44 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         right2 = ram_state[30] & 15
         for i in range(4):
             if 2**(3-i) & left1:
-                objects[8+i] = Boss_Block_Blue(32+i*4, 214 - ram_state[95])
+                objects[9+i] = Boss_Block_Blue(32+i*4, 214 - ram_state[95])
             else:
-                objects[8+i] = None
+                objects[9+i] = NoObject()
 
             if 2**i & right1:
-                objects[12+i] = Boss_Block_Blue(112+i*4, 214 - ram_state[95])
+                objects[13+i] = Boss_Block_Blue(112+i*4, 214 - ram_state[95])
             else:
-                objects[12+i] = None
+                objects[13+i] = NoObject()
 
             if 2**(3-i) & left2:
-                objects[16+i] = Boss_Block_Blue(32+i*4, 216 - ram_state[95])
+                objects[17+i] = Boss_Block_Blue(32+i*4, 216 - ram_state[95])
             else:
-                objects[16+i] = None
+                objects[17+i] = NoObject()
 
             if 2**i & right2:
-                objects[20+i] = Boss_Block_Blue(112+i*4, 216 - ram_state[95])
+                objects[21+i] = Boss_Block_Blue(112+i*4, 216 - ram_state[95])
             else:
-                objects[20+i] = None
+                objects[21+i] = NoObject()
 
         # left side of blue blocks
         states = [28, 31]
         for i in range(2):
             for j in range(8):
                 if ram_state[states[i]] & (2**j):
-                    objects[24+j+(8*i)] = Boss_Block_Blue(48 +
+                    objects[25+j+(8*i)] = Boss_Block_Blue(48 +
                                                           j*4, 214+(3*i) - ram_state[95])
                 else:
-                    objects[24+j+(8*i)] = None
+                    objects[25+j+(8*i)] = NoObject()
 
         # righte side of blue block
         states = [29, 32]
         for i in range(2):
             for j in range(8):
                 if ram_state[states[i]] & (2**(7-j)):
-                    objects[40+j+(8*i)] = Boss_Block_Blue(80 +
+                    objects[41+j+(8*i)] = Boss_Block_Blue(80 +
                                                           j*4, 214+(3*i) - ram_state[95])
                 else:
-                    objects[40+j+(8*i)] = None
+                    objects[41+j+(8*i)] = NoObject()
 
         # Outer blocks of first 2 red rows
         left1 = ram_state[33] >> 4
@@ -370,44 +376,44 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         right2 = ram_state[36] & 15
         for i in range(4):
             if 2**(3-i) & left1:
-                objects[56+i] = Boss_Block_Red(32+i*4, 218 - ram_state[95])
+                objects[57+i] = Boss_Block_Red(32+i*4, 218 - ram_state[95])
             else:
-                objects[56+i] = None
+                objects[57+i] = NoObject()
 
             if 2**i & right1:
-                objects[60+i] = Boss_Block_Red(112+i*4, 218 - ram_state[95])
+                objects[61+i] = Boss_Block_Red(112+i*4, 218 - ram_state[95])
             else:
-                objects[60+i] = None
+                objects[61+i] = NoObject()
 
             if 2**(3-i) & left2:
-                objects[64+i] = Boss_Block_Red(32+i*4, 221 - ram_state[95])
+                objects[65+i] = Boss_Block_Red(32+i*4, 221 - ram_state[95])
             else:
-                objects[64+i] = None
+                objects[65+i] = NoObject()
 
             if 2**i & right2:
-                objects[68+i] = Boss_Block_Red(112+i*4, 221 - ram_state[95])
+                objects[69+i] = Boss_Block_Red(112+i*4, 221 - ram_state[95])
             else:
-                objects[68+i] = None
+                objects[69+i] = NoObject()
 
         # left side of red blocks
         states = [34, 37, 39, 41, 43]
         for i in range(5):
             for j in range(8):
                 if ram_state[states[i]] & (2**j):
-                    objects[72+j+(8*i)] = Boss_Block_Red(48+j *
+                    objects[73+j+(8*i)] = Boss_Block_Red(48+j *
                                                          4, 218+(3*i) - ram_state[95])
                 else:
-                    objects[72+j+(8*i)] = None
+                    objects[73+j+(8*i)] = NoObject()
 
         # righte side of red block
         states = [35, 38, 40, 42, 44]
         for i in range(5):
             for j in range(8):
                 if ram_state[states[i]] & (2**(7-j)):
-                    objects[112+j+(8*i)] = Boss_Block_Red(80 +
+                    objects[113+j+(8*i)] = Boss_Block_Red(80 +
                                                           j*4, 218+(3*i) - ram_state[95])
                 else:
-                    objects[112+j+(8*i)] = None
+                    objects[113+j+(8*i)] = NoObject()
 
         # last 2 rows
         for i in range(2):
@@ -415,16 +421,16 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             right = ram_state[45+i] & 15
             for j in range(4):
                 if (2**j) & left:
-                    objects[152+j+(8*i)] = Boss_Block_Red(64 +
+                    objects[153+j+(8*i)] = Boss_Block_Red(64 +
                                                           j*4, 233+(3*i) - ram_state[95])
                 else:
-                    objects[152+j+(8*i)] = None
+                    objects[153+j+(8*i)] = NoObject()
 
                 if (2**(3-j)) & right:
-                    objects[156+j+(8*i)] = Boss_Block_Red(80 +
+                    objects[157+j+(8*i)] = Boss_Block_Red(80 +
                                                           j*4, 233+(3*i) - ram_state[95])
                 else:
-                    objects[156+j+(8*i)] = None
+                    objects[157+j+(8*i)] = NoObject()
 
     if hud:
         # ram[71-73] == score
@@ -457,4 +463,4 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[-5+i] = Life()
                 objects[-5+i].xy = 99 - (4*i), 13
             else:
-                objects[-5+i] = None
+                objects[-5+i] = NoObject()
