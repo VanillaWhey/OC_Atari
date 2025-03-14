@@ -3,7 +3,7 @@ from ._helper_methods import _convert_number
 import sys
 
 MAX_NB_OBJECTS = {"Player": 1, "Player_Projectile": 1, "Phoenix": 8, "Bat": 7, "Enemy_Projectile": 4,
-                  "Boss": 1, "Boss_Block_Green": 2, "Boss_Block_Blue": 48, "Boss_Block_Red": 112}
+                  "Boss": 1, "Boss_Block_Green": 2, "Boss_Block_Blue": 48, "Boss_Block_Red": 112, "Shield": 1}
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {"Score": 1, "Life": 5}
 
 
@@ -156,6 +156,17 @@ class Life(ValueObject):
         self.hud = True
         self.value = 0
 
+class Shield(GameObject):
+    """
+    Players points in the game
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._xy = 99, 13
+        self.wh = (16, 19)
+        self.rgb = 255, 255, 255
+
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
@@ -178,7 +189,7 @@ def _init_objects_ram(hud=False):
     (Re)Initialize the objects
     """
     objects = [Player()]
-    objects.extend([NoObject()] * 167)
+    objects.extend([NoObject()] * 168)
 
     if hud:
         objects.extend([Score()])
@@ -198,11 +209,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # ram[94] == player_x
     objects[0].xy = ram_state[94] - 70, 173
-
-    if ram_state[49]:
-        objects[0].wh = (12, 12)
-    else:
-        objects[0].wh = (7, 10)
 
     if ram_state[89] < 193:
         objects[1] = Player_Projectile()
@@ -359,7 +365,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     objects[25+j+(8*i)] = NoObject()
 
-        # righte side of blue block
+        # right side of blue block
         states = [29, 32]
         for i in range(2):
             for j in range(8):
@@ -405,7 +411,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 else:
                     objects[73+j+(8*i)] = NoObject()
 
-        # righte side of red block
+        # right side of red block
         states = [35, 38, 40, 42, 44]
         for i in range(5):
             for j in range(8):
@@ -431,6 +437,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                                                           j*4, 233+(3*i) - ram_state[95])
                 else:
                     objects[157+j+(8*i)] = NoObject()
+
+
+    if 63 < ram_state[49] < 128:
+        objects[168] = Shield()
+        objects[168].xy = objects[0].x - 4, objects[0].y - 4
 
     if hud:
         # ram[71-73] == score
