@@ -7,7 +7,7 @@ import numpy as np
 RAM extraction for the game GALAXIAN. Supported modes: ram.
 """
 # TODO: Enemy Ships could be up to 42, but that does not happen in an unmodified game > which one should be saved?
-MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'EnemyShip': 42, 'DivingEnemy': 10, 'EnemyMissile': 24}
+MAX_NB_OBJECTS = {'Player': 1, 'PlayerMissile': 1, 'EnemyShip': 42, 'DivingEnemy': 10, 'EnemyMissile': 39}
 MAX_NB_OBJECTS_HUD = MAX_NB_OBJECTS | {'Life': 3, 'Score': 1, 'Round': 1}
 
 # enemy_missiles saves the enemy missiles according to at which ram position their x positon is saved
@@ -140,7 +140,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects: list[GameObject] = [Player(), PlayerMissile()] + [NoObject()] * 79
+    objects: list[GameObject] = [Player(), PlayerMissile()] + [NoObject()] * 93
 
     if hud:
         objects.extend([NoObject(), NoObject(), NoObject(), Score(), Round()])
@@ -180,6 +180,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # ENEMIES
     # The 7 rightmost bits of the ram positions 38 to 44 represent a bitmap of the enemies.
     # Each bit is 1 if there is an enemy in its position and 0 if there is not.
+    # RAM 37 is enemy direction 0: ->, 128: <-
     for i in range(6):
         row = format(ram_state[38 + i] & 0x7F, '07b')  # gets a string of the 7 relevant bits
         row = [int(x) for x in row]
@@ -188,7 +189,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if row[j] == 1 and ram_state[53] >= i:
                 enemy_ship = EnemyShip()
                 enemy_ship.y = row_y
-                enemy_ship.x = 19 + np.floor(ram_state[36] * 0.5) + np.ceil(j * 16.5)
+                enemy_ship.x = 19 + np.floor((ram_state[36])  * 0.5) + np.ceil(j * 16.5)
             else:
                 enemy_ship = NoObject()
             objects[2+ i + 6 * j] = enemy_ship
@@ -207,26 +208,25 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[50 + i] = NoObject()
 
     # ENEMY MISSILES
-    # RAM 48 doppel?p
-
+    # RAM 48 doppel?
     """
-    The missiles are setting ram_state[25:32] as they decend, so these are used for the y calculation. 
+    The missiles are setting ram_state[25:32] as they descend, so these are used for the y calculation. 
     The idea here is that the missiles always use the first unused ram of ram_state[102 + i]
     """
 
-    for i in range(8):
-        bits = format(prev_ram[i + 25], '#05b')[2:5]
+    for i in range(ram_state[53], 13):
+        bits = format(prev_ram[i + 20], '#05b')[2:5]
         for j in range(3):
             idx = j + 3 * i
             if bits[j] == '1':
                 if type(enemy_missiles[idx]) == NoObject:
                     enemy_missiles[idx] = EnemyMissile()
-                enemy_missiles[idx].y = 96 + 12 * i + 4 * j
+                enemy_missiles[idx].y = 36 + 12 * i + 4 * j
             else:
                 enemy_missiles[idx] = NoObject()
 
     k = 0
-    for i in range(24):
+    for i in range(MAX_NB_OBJECTS["EnemyMissile"]):
         if type(enemy_missiles[i]) == EnemyMissile:
             x_ram = ram_state[102 + k % 8]
             if enemy_missiles[i].y >= 184 or x_ram < 5:
@@ -234,8 +234,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             else:
                 enemy_missiles[i].x = x_ram + 11
             k += 1
-
         objects[55 + i] = enemy_missiles[i]
+
+    print(k)
 
     if hud:
         # Lives

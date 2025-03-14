@@ -464,3 +464,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 objects[-5+i].xy = 99 - (4*i), 13
             else:
                 objects[-5+i] = NoObject()
+
+
+"""
+RAM 74 for level
+"""
