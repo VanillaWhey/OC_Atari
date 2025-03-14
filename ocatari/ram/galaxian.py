@@ -236,8 +236,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             k += 1
         objects[55 + i] = enemy_missiles[i]
 
-    print(k)
-
     if hud:
         # Lives
         for i in range(3):
